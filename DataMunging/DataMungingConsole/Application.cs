@@ -10,7 +10,18 @@ namespace DataMungingConsole
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("14");
+            var options = new Options();
+            if (CommandLine.Parser.Default.ParseArguments(args, options))
+            {
+                Console.WriteLine(options.LookupMinDiffVerb.LookupColumn);
+            }
+        }
+
+        private static void ProcessCommandLineVerb(string name, object obj)
+        {
+            Console.WriteLine(name);
         }
     }
+
+    
 }
