@@ -10,17 +10,26 @@ namespace DataMungingConsole
     {
         public static void Main(string[] args)
         {
+            string invokedVerb = string.Empty;
+            object invokedVerbOptions = null;
+
             var options = new Options();
-            if (CommandLine.Parser.Default.ParseArguments(args, options))
+            if (!CommandLine.Parser.Default.ParseArguments(args, options, 
+                (verb, subOptions) =>
+                {
+                    invokedVerb = verb;
+                    invokedVerbOptions = subOptions;
+                }))
             {
-                Console.WriteLine(options.LookupMinDiffVerb.LookupColumn);
+                Environment.Exit(CommandLine.Parser.DefaultExitCodeFail);
+            }
+
+            if (invokedVerb == Options.LookupMinDiffOp)
+            {
+                LookupOptions lookupOptions = (LookupOptions)invokedVerbOptions;
             }
         }
 
-        private static void ProcessCommandLineVerb(string name, object obj)
-        {
-            Console.WriteLine(name);
-        }
     }
 
     
