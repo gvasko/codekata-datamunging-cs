@@ -21,6 +21,7 @@ namespace DataMungingConsole
                     invokedVerbOptions = subOptions;
                 }))
             {
+                System.Console.WriteLine(options.GetUsage());
                 Environment.Exit(CommandLine.Parser.DefaultExitCodeFail);
             }
 
@@ -28,6 +29,8 @@ namespace DataMungingConsole
             {
                 LookupOptions lookupOptions = (LookupOptions)invokedVerbOptions;
             }
+
+            System.Console.WriteLine("alma");
         }
 
     }

@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 
 using DataMungingConsole;
+using System.Diagnostics;
 
 namespace DataMungingConsoleTest
 {
@@ -12,32 +13,44 @@ namespace DataMungingConsoleTest
         [TestMethod]
         public void Given_WeatherDatFile_Calculate_DayWithSmallestTemperatureSpread_TestStdOut()
         {
-            string operation = Options.LookupMinDiffOp;
-            string inputFile = OptionWithValue(LookupOptions.InputFileArg, "weather.dat");
-            string lookupColumn = OptionWithValue(LookupOptions.LookupColumnArg, "Dy");
-            string column1 = OptionWithValue(LookupOptions.Column1Arg, "MxT");
-            string column2 = OptionWithValue(LookupOptions.Column2Arg, "MnT");
+            string result = LaunchApplicationWith("LookupMinDiff --data=weather.dat --resultCol=0 --col1=1 --col2=2");
 
-            StringWriter capturedStdOut = CaptureStdOut();
-
-            Application.Main(new string[] { operation, inputFile, lookupColumn, column1, column2 });
-
-            string result = capturedStdOut.ToString();
             string expectedDayInWeatherDatFile = "14";
+
             Assert.AreEqual(expectedDayInWeatherDatFile + Environment.NewLine, result);
         }
 
-        private static StringWriter CaptureStdOut()
+        private static string LaunchApplicationWith(string cmdLine)
+        {
+            string appName = typeof(Application).Assembly.Location;
+            ProcessStartInfo dataMungingConsoleApp = new ProcessStartInfo(appName, cmdLine);
+            dataMungingConsoleApp.UseShellExecute = false;
+            dataMungingConsoleApp.RedirectStandardOutput = true;
+            dataMungingConsoleApp.CreateNoWindow = true;
+            dataMungingConsoleApp.WindowStyle = ProcessWindowStyle.Hidden;
+
+            string output = string.Empty;
+            using (Process dataMungingProc = Process.Start(dataMungingConsoleApp))
+            {
+                output = dataMungingProc.StandardOutput.ReadToEnd();
+                dataMungingProc.WaitForExit();
+            }
+
+            return output;
+        }
+
+        private static string DebugApplicationWith(string cmdLine)
         {
             StringWriter capturedStdOut = new StringWriter();
             System.Console.SetOut(capturedStdOut);
-            return capturedStdOut;
+
+            string[] arguments = cmdLine.Split(" ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            Application.Main(arguments);
+
+            return capturedStdOut.ToString();
+
         }
 
-        private static string OptionWithValue(string option, string value)
-        {
-            return "--" + option + "=" + value;
-        }
     }
 
 }
