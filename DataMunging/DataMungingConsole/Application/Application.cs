@@ -29,8 +29,12 @@ namespace DataMungingConsole
             {
                 LookupOptions lookupOptions = (LookupOptions)invokedVerbOptions;
             }
+            else
+            {
+                System.Console.WriteLine("Internal error.");
+                Environment.Exit(CommandLine.Parser.DefaultExitCodeFail);
+            }
 
-            System.Console.WriteLine("alma");
         }
 
     }

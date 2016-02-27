@@ -13,14 +13,14 @@ namespace DataMungingConsoleTest
         [TestMethod]
         public void Given_WeatherDatFile_Calculate_DayWithSmallestTemperatureSpread_TestStdOut()
         {
-            string result = LaunchApplicationWith("LookupMinDiff --data=weather.dat --resultCol=0 --col1=1 --col2=2");
+            string result = LaunchCLIWith("LookupMinDiff --data=weather.dat --resultCol=0 --col1=1 --col2=2");
 
             string expectedDayInWeatherDatFile = "14";
 
             Assert.AreEqual(expectedDayInWeatherDatFile + Environment.NewLine, result);
         }
 
-        private static string LaunchApplicationWith(string cmdLine)
+        private static string LaunchCLIWith(string cmdLine)
         {
             string appName = typeof(Application).Assembly.Location;
             ProcessStartInfo dataMungingConsoleApp = new ProcessStartInfo(appName, cmdLine);
@@ -39,7 +39,7 @@ namespace DataMungingConsoleTest
             return output;
         }
 
-        private static string DebugApplicationWith(string cmdLine)
+        private static string DebugCLIWith(string cmdLine)
         {
             StringWriter capturedStdOut = new StringWriter();
             System.Console.SetOut(capturedStdOut);

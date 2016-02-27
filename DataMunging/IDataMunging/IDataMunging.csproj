@@ -4,17 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2CFF8F29-9C7C-4166-A0C3-005D3EAB01EB}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{90FFE0C4-919C-45D3-B26D-1249AC543B77}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DataMungingConsole</RootNamespace>
-    <AssemblyName>DataMungingConsole</AssemblyName>
+    <RootNamespace>IDataMunging</RootNamespace>
+    <AssemblyName>IDataMunging</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -33,10 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommandLine, Version=1.9.71.2, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -47,27 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application\Application.cs" />
-    <Compile Include="Workflow\DefaultWorkflow.cs" />
-    <Compile Include="Workflow\IDataMungingFactory.cs" />
-    <Compile Include="Workflow\IConsoleWorkflow.cs" />
-    <Compile Include="Workflow\IStringRecordProcessor.cs" />
-    <Compile Include="Application\Options.cs" />
+    <Compile Include="IStringRecord.cs" />
+    <Compile Include="IStringRecordVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DataMungingLib\DataMungingLib.csproj">
-      <Project>{0de4d8c3-7d73-4259-89e8-52044ac0312a}</Project>
-      <Name>DataMungingLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\IDataMunging\IDataMunging.csproj">
-      <Project>{90ffe0c4-919c-45d3-b26d-1249ac543b77}</Project>
-      <Name>IDataMunging</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
