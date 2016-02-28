@@ -19,28 +19,28 @@ namespace DataMungingConsoleTest
         [TestMethod]
         public void BasicWorkflowTest()
         {
-            string fakeFileName = "example.dat";
-            var factory = Substitute.For<IDataMungingFactory>();
-            var fakeParser = Substitute.For<IStringTableParser>();
+            string dummyFileName = "example.dat";
+            var factoryStub = Substitute.For<IDataMungingFactory>();
+            var parserStub = Substitute.For<IStringTableParser>();
             var spyTable = Substitute.For<IStringTable>();
-            fakeParser.Parse(Arg.Any<StreamReader>()).Returns(spyTable);
-            factory.CreaterStringTableParser().Returns(fakeParser);
+            parserStub.Parse(Arg.Any<StreamReader>()).Returns(spyTable);
+            factoryStub.CreaterStringTableParser().Returns(parserStub);
 
-            var fakeRecProc = Substitute.For<IStringRecordProcessor>();
-            string fakeProcResult = "example result of record processor";
-            fakeRecProc.Result.Returns(fakeProcResult);
+            var recProcStub = Substitute.For<IStringRecordProcessor>();
+            string dummyProcResult = "example result of record processor";
+            recProcStub.Result.Returns(dummyProcResult);
 
-            DefaultWorkflow wf = new DefaultWorkflow(factory);
+            DefaultWorkflow wf = new DefaultWorkflow(factoryStub);
             string output = wf.EntryPoint
-                .LoadFile(fakeFileName)
-                .SetProcessor(fakeRecProc)
+                .LoadFile(dummyFileName)
+                .SetProcessor(recProcStub)
                 .Ready()
                 .Execute()
                 .Output;
 
-            factory.Received().CreateStreamReader(Arg.Is(fakeFileName));
-            spyTable.Received().VisitAllRecords(Arg.Is(fakeRecProc));
-            Assert.AreEqual(fakeProcResult, output);
+            factoryStub.Received().CreateStreamReader(Arg.Is(dummyFileName));
+            spyTable.Received().VisitAllRecords(Arg.Is(recProcStub));
+            Assert.AreEqual(dummyProcResult, output);
         }
     }
 }
