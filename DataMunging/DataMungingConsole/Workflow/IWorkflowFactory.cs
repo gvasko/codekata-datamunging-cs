@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataMungingConsole
+namespace DataMungingConsole.Workflow
 {
-    public interface IDataMungingFactory
+    public interface IWorkflowFactory
     {
         StreamReader CreateStreamReader(string path);
-        IStringTableParser CreaterStringTableParser();
+        IStringTableParser CreaterStringTableParser(StreamReader reader);
     }
 }

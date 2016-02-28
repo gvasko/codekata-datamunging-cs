@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using CommandLine;
 using CommandLine.Text;
 
-namespace DataMungingConsole
+namespace DataMungingConsole.Application
 {
     public class LookupOptions
     {

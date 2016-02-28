@@ -49,7 +49,8 @@
   <ItemGroup>
     <Compile Include="Application\Application.cs" />
     <Compile Include="Workflow\DefaultWorkflow.cs" />
-    <Compile Include="Workflow\IDataMungingFactory.cs" />
+    <Compile Include="Workflow\DefaultWorkflowFactory.cs" />
+    <Compile Include="Workflow\IWorkflowFactory.cs" />
     <Compile Include="Workflow\IConsoleWorkflow.cs" />
     <Compile Include="Workflow\IStringRecordProcessor.cs" />
     <Compile Include="Application\Options.cs" />

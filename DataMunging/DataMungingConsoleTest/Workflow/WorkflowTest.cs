@@ -1,5 +1,5 @@
 ﻿using DataMungingConsole;
-using DataMungingConsole.WorkflowBuilder;
+using DataMungingConsole.Workflow;
 using IDataMunging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
@@ -20,11 +20,11 @@ namespace DataMungingConsoleTest
         public void BasicWorkflowTest()
         {
             string dummyFileName = "example.dat";
-            var factoryStub = Substitute.For<IDataMungingFactory>();
+            var factoryStub = Substitute.For<IWorkflowFactory>();
             var parserStub = Substitute.For<IStringTableParser>();
             var spyTable = Substitute.For<IStringTable>();
-            parserStub.Parse(Arg.Any<StreamReader>()).Returns(spyTable);
-            factoryStub.CreaterStringTableParser().Returns(parserStub);
+            parserStub.Parse().Returns(spyTable);
+            factoryStub.CreaterStringTableParser(Arg.Any<StreamReader>()).Returns(parserStub);
 
             var recProcStub = Substitute.For<IStringRecordProcessor>();
             string dummyProcResult = "example result of record processor";

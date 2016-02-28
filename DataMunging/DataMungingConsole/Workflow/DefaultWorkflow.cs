@@ -1,5 +1,4 @@
-﻿using DataMungingConsole.WorkflowBuilder;
-using IDataMunging;
+﻿using IDataMunging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,15 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataMungingConsole
+namespace DataMungingConsole.Workflow
 {
     public class DefaultWorkflow : ITableLoader, ITableHolder, IOperationExecutor
     {
-        private IDataMungingFactory factory;
+        private IWorkflowFactory factory;
         private IStringTable table;
         private IStringRecordProcessor recProc;
 
-        public DefaultWorkflow(IDataMungingFactory factory)
+        public DefaultWorkflow(IWorkflowFactory factory)
         {
             this.factory = factory;
         }
@@ -29,7 +28,7 @@ namespace DataMungingConsole
         {
             using (StreamReader reader = factory.CreateStreamReader(path))
             {
-                table = factory.CreaterStringTableParser().Parse(reader);
+                table = factory.CreaterStringTableParser(reader).Parse();
             }
             return this;
         }

@@ -4,6 +4,7 @@ using System.IO;
 
 using DataMungingConsole;
 using System.Diagnostics;
+using DataMungingConsole.Application;
 
 namespace DataMungingConsoleTest
 {

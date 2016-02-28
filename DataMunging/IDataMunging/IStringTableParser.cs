@@ -9,6 +9,6 @@ namespace IDataMunging
 {
     public interface IStringTableParser
     {
-        IStringTable Parse(StreamReader reader);
+        IStringTable Parse();
     }
 }
