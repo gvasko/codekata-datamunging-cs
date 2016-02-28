@@ -1,6 +1,8 @@
 ﻿using DataMungingConsole.WorkflowBuilder;
+using IDataMunging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,9 +11,13 @@ namespace DataMungingConsole
 {
     public class DefaultWorkflow : ITableLoader, ITableHolder, IOperationExecutor
     {
+        private IDataMungingFactory factory;
+        private IStringTable table;
+        private IStringRecordProcessor recProc;
+
         public DefaultWorkflow(IDataMungingFactory factory)
         {
-            throw new NotImplementedException();
+            this.factory = factory;
         }
 
         public ITableLoader EntryPoint
@@ -21,6 +27,10 @@ namespace DataMungingConsole
 
         public ITableHolder LoadFile(string path)
         {
+            using (StreamReader reader = factory.CreateStreamReader(path))
+            {
+                table = factory.CreaterStringTableParser().Parse(reader);
+            }
             return this;
         }
 
@@ -31,6 +41,7 @@ namespace DataMungingConsole
 
         public ITableHolder SetProcessor(IStringRecordProcessor recProc)
         {
+            this.recProc = recProc;
             return this;
         }
 
@@ -38,12 +49,13 @@ namespace DataMungingConsole
         {
             get
             {
-                throw new NotImplementedException();
+                return recProc.Result;
             }
         }
 
         public IOperationExecutor Execute()
         {
+            table.VisitAllRecords(recProc);
             return this;
         }
 

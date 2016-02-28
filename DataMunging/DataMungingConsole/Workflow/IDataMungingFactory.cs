@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IDataMunging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace DataMungingConsole
     public interface IDataMungingFactory
     {
         StreamReader CreateStreamReader(string path);
+        IStringTableParser CreaterStringTableParser();
     }
 }

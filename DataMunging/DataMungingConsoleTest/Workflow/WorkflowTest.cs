@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,42 +13,33 @@ using System.Threading.Tasks;
 namespace DataMungingConsoleTest
 {
     [TestClass]
-    class WorkflowTest
+    public class WorkflowTest
     {
 
         [TestMethod]
         public void BasicWorkflowTest()
         {
-            // DataMungingConsoleFactory
-            // IStringTableParser parser = factory.CreateStringTableParser
-            // IStringTable table = parser.LoadAndParse(file)
-            // IStringRecordProcessor : IStringRecordVisitor
-            // IStringRecordProcessor recProcessor
-            // table.VisitEachRecordWith(recProcessor)
-            //      for each IStringRecord rec in table.Records
-            //          recProcessor.ProcessRecord(record)
-            //
-            // return recProcessor.TextResult
-            //
-
-
             string fakeFileName = "example.dat";
             var factory = Substitute.For<IDataMungingFactory>();
+            var fakeParser = Substitute.For<IStringTableParser>();
+            var spyTable = Substitute.For<IStringTable>();
+            fakeParser.Parse(Arg.Any<StreamReader>()).Returns(spyTable);
+            factory.CreaterStringTableParser().Returns(fakeParser);
 
-            var recProc = Substitute.For<IStringRecordProcessor>();
+            var fakeRecProc = Substitute.For<IStringRecordProcessor>();
             string fakeProcResult = "example result of record processor";
-            recProc.Result.Returns(fakeProcResult);
+            fakeRecProc.Result.Returns(fakeProcResult);
 
             DefaultWorkflow wf = new DefaultWorkflow(factory);
             string output = wf.EntryPoint
                 .LoadFile(fakeFileName)
-                .SetProcessor(recProc)
+                .SetProcessor(fakeRecProc)
                 .Ready()
                 .Execute()
                 .Output;
 
             factory.Received().CreateStreamReader(Arg.Is(fakeFileName));
-            // assert: record processor visited all records
+            spyTable.Received().VisitAllRecords(Arg.Is(fakeRecProc));
             Assert.AreEqual(fakeProcResult, output);
         }
     }

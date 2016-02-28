@@ -42,6 +42,8 @@
   <ItemGroup>
     <Compile Include="IStringRecord.cs" />
     <Compile Include="IStringRecordVisitor.cs" />
+    <Compile Include="IStringTable.cs" />
+    <Compile Include="IStringTableParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
