@@ -65,7 +65,7 @@ namespace DataMungingConsoleTest.Workflow
             Assert.AreEqual(string.Empty, lmd.Result);
         }
 
-        [TestMethod, ExpectedException(typeof(FormatException))]
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
         public void NotANumberThrowsException()
         {
             IStringRecord rec1 = RecordStubA12X();

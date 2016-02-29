@@ -35,14 +35,27 @@ namespace DataMungingConsole.Workflow
 
         public void Visit(IStringRecord rec)
         {
-            int col1 = Int32.Parse(rec.GetField(columnIndex1));
-            int col2 = Int32.Parse(rec.GetField(columnIndex2));
+            int col1 = ParseField(rec, columnIndex1);
+            int col2 = ParseField(rec, columnIndex2);
+
             int actualMinDiff = Math.Abs(col1 - col2);
+
             if (actualMinDiff < minDiff)
             {
                 minDiff = actualMinDiff;
                 result = rec.GetField(resultIndex);
             }
+        }
+
+        private int ParseField(IStringRecord rec, int columnIndex)
+        {
+            int col1 = 0;
+            if (!Int32.TryParse(rec.GetField(columnIndex), out col1))
+            {
+                throw new ArgumentException("Cannot parse parameter", "column1");
+            }
+
+            return col1;
         }
     }
 }

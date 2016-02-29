@@ -21,12 +21,15 @@ namespace DataMungingConsole.Application
 
         [Option(LookupColumnArg, HelpText = "The column the result of the operation is returned from.")]
         public string LookupColumn { get; set; }
+        public int LookupColumnAsInt { get { return Int32.Parse(LookupColumn); } }
 
         [Option(Column1Arg, HelpText = "The first column used in calculations.")]
         public string Column1 { get; set; }
+        public int Column1AsInt { get { return Int32.Parse(Column1); } }
 
         [Option(Column2Arg, HelpText = "The second column used in calculations.")]
         public string Column2 { get; set; }
+        public int Column2AsInt { get { return Int32.Parse(Column2); } }
 
     }
 

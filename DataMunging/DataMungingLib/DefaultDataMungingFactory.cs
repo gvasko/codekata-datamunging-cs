@@ -12,7 +12,7 @@ namespace DataMungingLib
     {
         public IStringRecord CreateStringRecord(string[] values)
         {
-            throw new NotImplementedException();
+            return new DefaultStringRecord(values);
         }
 
         public IStringTable CreateStringTable(int columnCount)

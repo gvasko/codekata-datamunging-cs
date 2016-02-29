@@ -24,7 +24,7 @@ namespace DataMungingConsole.Application
                 }))
             {
                 System.Console.WriteLine(options.GetUsage());
-                throw new ArgumentException();
+                throw new ArgumentException("Invalid arguments.");
             }
         }
 
@@ -35,16 +35,21 @@ namespace DataMungingConsole.Application
 
         internal string Run()
         {
-            IStringRecordProcessor recordProcessor = null;
             string fileName = string.Empty;
+            IStringRecordProcessor recordProcessor = null;
 
             if (invokedVerb == Options.LookupMinDiffOp)
             {
                 LookupOptions lookupOptions = (LookupOptions)invokedVerbOptions;
+                fileName = lookupOptions.InputFile;
+                recordProcessor = new LookupMinDiff(
+                    lookupOptions.LookupColumnAsInt,
+                    lookupOptions.Column1AsInt,
+                    lookupOptions.Column2AsInt);
             }
             else
             {
-                throw new ArgumentException("Internal error: unknown verb.");
+                throw new InvalidOperationException("Internal error: unknown verb.");
             }
 
             if (recordProcessor == null)
@@ -54,7 +59,7 @@ namespace DataMungingConsole.Application
 
             if (string.IsNullOrEmpty(fileName))
             {
-                throw new ArgumentException("Internal error: no input file provided");
+                throw new InvalidOperationException("Internal error: no input file provided");
             }
 
             var wfFactory = new DefaultWorkflowFactory(new DefaultDataMungingFactory());
