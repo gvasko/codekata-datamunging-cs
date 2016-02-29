@@ -33,7 +33,7 @@ namespace DataMungingConsole.Application
             // nothing to do
         }
 
-        public string Run()
+        internal string Run()
         {
             IStringRecordProcessor recordProcessor = null;
             string fileName = string.Empty;

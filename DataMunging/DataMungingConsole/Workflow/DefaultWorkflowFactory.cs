@@ -8,7 +8,7 @@ using IDataMunging;
 
 namespace DataMungingConsole.Workflow
 {
-    public class DefaultWorkflowFactory : IWorkflowFactory
+    internal class DefaultWorkflowFactory : IWorkflowFactory
     {
         private IDataMungingFactory dmFactory;
 

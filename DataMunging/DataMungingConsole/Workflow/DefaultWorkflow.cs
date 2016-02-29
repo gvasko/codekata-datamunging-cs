@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataMungingConsole.Workflow
 {
-    public class DefaultWorkflow : ITableLoader, ITableHolder, IOperationExecutor
+    internal class DefaultWorkflow : ITableLoader, ITableHolder, IOperationExecutor
     {
         private IWorkflowFactory factory;
         private IStringTable table;

@@ -9,7 +9,7 @@ using CommandLine.Text;
 
 namespace DataMungingConsole.Application
 {
-    public class LookupOptions
+    internal class LookupOptions
     {
         public const string InputFileArg = "data";
         public const string LookupColumnArg = "resultCol";
@@ -30,7 +30,7 @@ namespace DataMungingConsole.Application
 
     }
 
-    public class Options
+    internal class Options
     {
         public const string LookupMinDiffOp = "LookupMinDiff";
         [VerbOption(LookupMinDiffOp, HelpText = "Lookup a value from a column, based on the difference of values in other columns.")]

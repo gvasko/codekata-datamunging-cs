@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataMungingConsole.Workflow
 {
-    public interface IWorkflowFactory
+    internal interface IWorkflowFactory
     {
         StreamReader CreateStreamReader(string path);
         IStringTableParser CreaterStringTableParser(StreamReader reader);
