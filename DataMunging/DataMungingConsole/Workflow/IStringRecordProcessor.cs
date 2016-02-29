@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataMungingConsole.Workflow
 {
-    internal interface IStringRecordProcessor : IStringRecordVisitor
+    public interface IStringRecordProcessor : IStringRecordVisitor
     {
         string Result { get; }
     }
