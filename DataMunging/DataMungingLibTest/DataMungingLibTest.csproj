@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="DefaultStringRecordTest.cs" />
     <Compile Include="DefaultStringTableTest.cs" />
+    <Compile Include="TestImpl\RecVisitorSpy.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

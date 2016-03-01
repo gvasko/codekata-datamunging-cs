@@ -41,7 +41,17 @@ namespace DataMungingLibTest
         public void EqualsAndHashCodeImplemented()
         {
             // This is a value object
-            throw new NotImplementedException();
+            string[] dummyRec1 = { "a", "b", "c" };
+            DefaultStringRecord rec1 = new DefaultStringRecord(dummyRec1);
+            DefaultStringRecord rec2 = new DefaultStringRecord(dummyRec1);
+
+            Assert.AreEqual(rec1, rec2);
+            Assert.AreEqual(rec1.GetHashCode(), rec2.GetHashCode());
+
+            string[] dummyRec2 = { "aa", "bb", "cc" };
+            DefaultStringRecord rec3 = new DefaultStringRecord(dummyRec2);
+            Assert.AreNotEqual(rec2, rec3);
+            Assert.AreNotEqual(rec1, rec3);
         }
     }
 }

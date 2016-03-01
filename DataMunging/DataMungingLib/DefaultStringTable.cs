@@ -11,12 +11,31 @@ namespace DataMungingLib
     {
 
         private List<IStringRecord> records;
+        private int fieldCount;
 
         public DefaultStringTable(IDataMungingFactory factory, List<string[]> recordList)
         {
+            this.fieldCount = -1;
             this.records = new List<IStringRecord>(recordList.Count);
-            foreach (string[] rec in recordList)
+            for (int i = 0; i < recordList.Count; i++)
             {
+                string[] rec = recordList[i];
+
+                if (rec == null)
+                {
+                    throw new ArgumentNullException(string.Format("Index={0}", i));
+                }
+
+                if (this.fieldCount == -1)
+                {
+                    this.fieldCount = rec.Length;
+                }
+
+                if (this.fieldCount != rec.Length)
+                {
+                    throw new ArgumentException(string.Format("Unexpected lenght of array. Index={0}", i));
+                }
+
                 records.Add(factory.CreateStringRecord(rec));
             }
         }
