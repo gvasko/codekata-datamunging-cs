@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="DefaultDataMungingFactory.cs" />
     <Compile Include="DefaultStringRecord.cs" />
+    <Compile Include="DefaultStringTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -59,6 +59,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DefaultStringRecordTest.cs" />
+    <Compile Include="DefaultStringTableTest.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -66,6 +67,10 @@
     <ProjectReference Include="..\DataMungingLib\DataMungingLib.csproj">
       <Project>{0de4d8c3-7d73-4259-89e8-52044ac0312a}</Project>
       <Name>DataMungingLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IDataMunging\IDataMunging.csproj">
+      <Project>{90ffe0c4-919c-45d3-b26d-1249ac543b77}</Project>
+      <Name>IDataMunging</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
