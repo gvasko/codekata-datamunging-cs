@@ -40,12 +40,10 @@ namespace DataMungingLibTest
         }
 
         [TestMethod]
-        public void TestLineParser()
+        public void StartingAndEndingWhiteSpacesAreRemoved()
         {
-            //string testLine = " aa bb  cc    ddd ";
-            //ILineParser parser = new 
-            //string[] parser.ParseLine(testLine);
-
+            throw new NotImplementedException();
         }
+
     }
 }

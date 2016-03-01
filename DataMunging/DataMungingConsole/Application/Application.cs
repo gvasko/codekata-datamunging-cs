@@ -1,5 +1,6 @@
 ﻿using DataMungingConsole.Workflow;
 using DataMungingLib;
+using DataMungingLib.LineParsers;
 using IDataMunging;
 using System;
 using System.Collections.Generic;
@@ -63,7 +64,7 @@ namespace DataMungingConsole.Application
                 throw new InvalidOperationException("Internal error: no input file provided");
             }
 
-            ILineParser lineParser = null;
+            ILineParser lineParser = new SeparatedValuesParser();
 
             var wfFactory = new DefaultWorkflowFactory(new DefaultDataMungingFactory(), lineParser);
             DefaultWorkflow wf = new DefaultWorkflow(wfFactory);
