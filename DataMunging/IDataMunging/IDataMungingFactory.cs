@@ -10,7 +10,7 @@ namespace IDataMunging
     public interface IDataMungingFactory
     {
         IStringRecord CreateStringRecord(string[] values);
-        IStringTable CreateStringTable(int columnCount);
-        IStringTableParser CreateStringTableParser(StreamReader reader);
+        IStringTable CreateStringTable(List<string[]> recordList);
+        IStringTableParser CreateStringTableParser(TextReader reader, ILineParser lineParser);
     }
 }

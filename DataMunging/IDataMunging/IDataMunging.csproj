@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IDataMungingFactory.cs" />
+    <Compile Include="ILineParser.cs" />
     <Compile Include="IStringRecord.cs" />
     <Compile Include="IStringRecordVisitor.cs" />
     <Compile Include="IStringTable.cs" />

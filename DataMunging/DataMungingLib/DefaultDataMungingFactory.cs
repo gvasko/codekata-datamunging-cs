@@ -15,14 +15,14 @@ namespace DataMungingLib
             return new DefaultStringRecord(values);
         }
 
-        public IStringTable CreateStringTable(int columnCount)
+        public IStringTable CreateStringTable(List<string[]> recordList)
         {
-            throw new NotImplementedException();
+            return new DefaultStringTable(this, recordList);
         }
 
-        public IStringTableParser CreateStringTableParser(StreamReader reader)
+        public IStringTableParser CreateStringTableParser(TextReader reader, ILineParser lineParser)
         {
-            throw new NotImplementedException();
+            return new DefaultStringTableParser(this, reader, lineParser);
         }
     }
 }
