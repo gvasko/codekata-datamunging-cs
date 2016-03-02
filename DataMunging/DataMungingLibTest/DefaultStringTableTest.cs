@@ -77,8 +77,8 @@ namespace DataMungingLibTest
         private static void AssertThatRecordsWithDifferentLenghtsThrowsException(List<string[]> dummyList)
         {
             var dummyRecord = Substitute.For<IStringRecord>();
-            IDataMungingFactory fakeFactory = CreateRecordCreatorFakeFactory();
-            var tableSUT = new DefaultStringTable(fakeFactory, dummyList);
+            var dummyFactory = Substitute.For<IDataMungingFactory>();
+            var tableSUT = new DefaultStringTable(dummyFactory, dummyList);
         }
 
         private static IDataMungingFactory CreateRecordCreatorFakeFactory()
