@@ -31,8 +31,8 @@ namespace DataMungingConsoleTest
             recProcStub.Result.Returns(dummyProcResult);
 
             DefaultWorkflow wf = new DefaultWorkflow(factoryStub);
-            string output = wf.EntryPoint
-                .LoadFile(dummyFileName)
+            string output = wf.EntryPoint(dummyFileName)
+                .LoadFile()
                 .SetProcessor(recProcStub)
                 .Ready()
                 .Execute()

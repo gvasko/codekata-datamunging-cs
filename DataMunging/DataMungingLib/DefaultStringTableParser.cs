@@ -13,6 +13,7 @@ namespace DataMungingLib
         private TextReader reader;
         private ILineParser lineParser;
         private IDataMungingFactory factory;
+        private List<LineFilterDelegate> lineFilters;
 
         public DefaultStringTableParser(IDataMungingFactory factory, TextReader reader, ILineParser lineParser)
         {
@@ -32,6 +33,7 @@ namespace DataMungingLib
             this.factory = factory;
             this.reader = reader;
             this.lineParser = lineParser;
+            this.lineFilters = new List<LineFilterDelegate>();
         }
 
         public IStringTable Parse()
@@ -39,9 +41,31 @@ namespace DataMungingLib
             List<string[]> recordList = new List<string[]>();
             while (reader.Peek() >= 0)
             {
-                recordList.Add(lineParser.Parse(reader.ReadLine()));
+                string line = reader.ReadLine();
+                if (!IsExcluded(line))
+                {
+                    recordList.Add(lineParser.Parse(line));
+                }
             }
             return factory.CreateStringTable(recordList);
+        }
+
+        private bool IsExcluded(string line)
+        {
+            foreach (LineFilterDelegate lineFilter in lineFilters)
+            {
+                if (lineFilter(line))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public IStringTableParser Exclude(LineFilterDelegate filter)
+        {
+            lineFilters.Add(filter);
+            return this;
         }
     }
 }

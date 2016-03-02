@@ -7,8 +7,11 @@ using System.Threading.Tasks;
 
 namespace IDataMunging
 {
+    public delegate bool LineFilterDelegate(string line);
+
     public interface IStringTableParser
     {
+        IStringTableParser Exclude(LineFilterDelegate filter);
         IStringTable Parse();
     }
 }

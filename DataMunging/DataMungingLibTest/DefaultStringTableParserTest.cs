@@ -17,7 +17,7 @@ namespace DataMungingLibTest
         public void TableParserProcessesEachLine()
         {
             string line1 = "line1";
-            string line2 = "line2";
+            string line2 = "";
             string line3 = "line3";
             string testDataTable = 
                 line1 + Environment.NewLine + 
@@ -40,9 +40,29 @@ namespace DataMungingLibTest
         }
 
         [TestMethod]
-        public void StartingAndEndingWhiteSpacesAreRemoved()
+        public void LinesCanBeExcludedFromParsing()
         {
-            throw new NotImplementedException();
+            string line1 = "line1";
+            string line2 = "";
+            string line3 = "line3";
+            string testDataTable =
+                line1 + Environment.NewLine +
+                line2 + Environment.NewLine +
+                line3 + Environment.NewLine;
+            var dataTableReader = new StringReader(testDataTable);
+            var spyLineParser = Substitute.For<ILineParser>();
+            var dummyFactory = Substitute.For<IDataMungingFactory>();
+            IStringTableParser tableParser = new DefaultStringTableParser(dummyFactory, dataTableReader, spyLineParser);
+
+            LineFilterDelegate emptyLines = line => string.IsNullOrEmpty(line.Trim());
+            tableParser.Exclude(emptyLines);
+            tableParser.Parse();
+
+            Received.InOrder(() =>
+            {
+                spyLineParser.Parse(line1);
+                spyLineParser.Parse(line3);
+            });
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IDataMunging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,9 +19,10 @@ namespace DataMungingConsole.Workflow
         IOperationExecutor Ready();
     }
 
-    internal interface ITableLoader
+    internal interface ITableLoader : IDisposable
     {
-        ITableHolder LoadFile(string path);
+        ITableLoader ExcludeLines(LineFilterDelegate filter);
+        ITableHolder LoadFile();
     }
 
 }

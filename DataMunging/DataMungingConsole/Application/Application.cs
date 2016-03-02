@@ -68,8 +68,9 @@ namespace DataMungingConsole.Application
 
             var wfFactory = new DefaultWorkflowFactory(new DefaultDataMungingFactory(), lineParser);
             DefaultWorkflow wf = new DefaultWorkflow(wfFactory);
-            string output = wf.EntryPoint
-                .LoadFile(fileName)
+            string output = wf.EntryPoint(fileName)
+                .ExcludeLines(LineFilters.EmptyLines) // TODO: add if parameter passed
+                .LoadFile()
                 .SetProcessor(recordProcessor)
                 .Ready()
                 .Execute()

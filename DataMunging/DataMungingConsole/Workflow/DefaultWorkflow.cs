@@ -11,25 +11,49 @@ namespace DataMungingConsole.Workflow
     internal class DefaultWorkflow : ITableLoader, ITableHolder, IOperationExecutor
     {
         private IWorkflowFactory factory;
+
+        #region TableLoader
+        private StreamReader reader;
+        private IStringTableParser parser;
+        #endregion
+
+        #region TableHolder
         private IStringTable table;
         private IStringRecordProcessor recProc;
+        #endregion
 
         public DefaultWorkflow(IWorkflowFactory factory)
         {
             this.factory = factory;
         }
 
-        public ITableLoader EntryPoint
+        #region TableLoader
+
+        public ITableLoader EntryPoint(string path)
         {
-            get { return this; }
+            reader = factory.CreateStreamReader(path);
+            parser = factory.CreaterStringTableParser(reader);
+            return this;
         }
 
-        public ITableHolder LoadFile(string path)
+        public ITableLoader ExcludeLines(LineFilterDelegate filter)
         {
-            using (StreamReader reader = factory.CreateStreamReader(path))
-            {
-                table = factory.CreaterStringTableParser(reader).Parse();
-            }
+            parser.Exclude(filter);
+            return this;
+        }
+
+        public void Dispose()
+        {
+            reader.Dispose();
+        }
+
+        #endregion
+
+        #region TableHolder
+
+        public ITableHolder LoadFile()
+        {
+            table = parser.Parse();
             return this;
         }
 
@@ -43,6 +67,10 @@ namespace DataMungingConsole.Workflow
             this.recProc = recProc;
             return this;
         }
+
+        #endregion
+
+        #region OperationExecutor
 
         public string Output
         {
@@ -58,5 +86,6 @@ namespace DataMungingConsole.Workflow
             return this;
         }
 
+        #endregion
     }
 }
