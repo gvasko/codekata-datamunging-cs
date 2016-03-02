@@ -9,9 +9,26 @@ namespace DataMungingLib.LineParsers
 {
     public class SeparatedValuesParser : ILineParser
     {
+        private char[] separators;
+        public SeparatedValuesParser(string separators)
+        {
+            this.separators = separators.ToCharArray();
+        }
+
         public string[] Parse(string line)
         {
-            throw new NotImplementedException();
+            string[] rawSeparation = line.Split(separators);
+            List<string> cleanSeparation = new List<string>(rawSeparation.Length);
+
+            foreach (string item in rawSeparation)
+            {
+                if (!string.IsNullOrEmpty(item))
+                {
+                    cleanSeparation.Add(item);
+                }
+            }
+
+            return cleanSeparation.ToArray();
         }
     }
 }
