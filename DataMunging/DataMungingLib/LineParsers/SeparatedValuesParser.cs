@@ -10,9 +10,17 @@ namespace DataMungingLib.LineParsers
     public class SeparatedValuesParser : ILineParser
     {
         private char[] separators;
+        private int fieldLimit;
+
         public SeparatedValuesParser(string separators)
         {
             this.separators = separators.ToCharArray();
+            this.fieldLimit = -1;
+        }
+
+        public int FieldLimit
+        {
+            set { fieldLimit = value; }
         }
 
         public string[] Parse(string line)
@@ -28,7 +36,14 @@ namespace DataMungingLib.LineParsers
                 }
             }
 
-            return cleanSeparation.ToArray();
+            if (fieldLimit < 0)
+            {
+                return cleanSeparation.ToArray();
+            }
+            else
+            {
+                return cleanSeparation.Take(fieldLimit).ToArray();
+            }
         }
     }
 }

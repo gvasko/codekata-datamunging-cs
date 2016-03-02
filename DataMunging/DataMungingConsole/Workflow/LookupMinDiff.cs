@@ -35,10 +35,10 @@ namespace DataMungingConsole.Workflow
 
         public void Visit(IStringRecord rec)
         {
-            int col1 = ParseField(rec, columnIndex1);
-            int col2 = ParseField(rec, columnIndex2);
+            int param1 = ParseField(rec, columnIndex1);
+            int param2 = ParseField(rec, columnIndex2);
 
-            int actualMinDiff = Math.Abs(col1 - col2);
+            int actualMinDiff = Math.Abs(param1 - param2);
 
             if (actualMinDiff < minDiff)
             {
@@ -47,15 +47,16 @@ namespace DataMungingConsole.Workflow
             }
         }
 
-        private int ParseField(IStringRecord rec, int columnIndex)
+        private int ParseField(IStringRecord rec, int fieldIndex)
         {
-            int col1 = 0;
-            if (!Int32.TryParse(rec.GetField(columnIndex), out col1))
+            int param = 0;
+            string paramStr = rec.GetField(fieldIndex);
+            if (!Int32.TryParse(paramStr, out param))
             {
-                throw new ArgumentException("Cannot parse parameter", "column1");
+                throw new ArgumentException("Unable to parse data", paramStr);
             }
 
-            return col1;
+            return param;
         }
     }
 }

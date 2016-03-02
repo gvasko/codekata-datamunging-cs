@@ -44,7 +44,8 @@ namespace DataMungingLib
                 string line = reader.ReadLine();
                 if (!IsExcluded(line))
                 {
-                    recordList.Add(lineParser.Parse(line));
+                    var rec = lineParser.Parse(line);
+                    recordList.Add(rec);
                 }
             }
             return factory.CreateStringTable(recordList);

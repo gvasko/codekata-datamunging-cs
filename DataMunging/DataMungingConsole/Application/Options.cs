@@ -15,6 +15,8 @@ namespace DataMungingConsole.Application
         public const string LookupColumnArg = "resultCol";
         public const string Column1Arg = "col1";
         public const string Column2Arg = "col2";
+        public const string SkipEmptyLinesArg = "skipEmptyLines";
+        public const string ParsedColumnLimitArg = "parsedColumnLimit";
 
         [Option(InputFileArg, HelpText = "Input file that contains the data.")]
         public string InputFile { get; set; }
@@ -24,12 +26,17 @@ namespace DataMungingConsole.Application
         public int LookupColumnAsInt { get { return Int32.Parse(LookupColumn); } }
 
         [Option(Column1Arg, HelpText = "The first column used in calculations.")]
-        public string Column1 { get; set; }
-        public int Column1AsInt { get { return Int32.Parse(Column1); } }
+        public int Column1 { get; set; }
 
         [Option(Column2Arg, HelpText = "The second column used in calculations.")]
-        public string Column2 { get; set; }
-        public int Column2AsInt { get { return Int32.Parse(Column2); } }
+        public int Column2 { get; set; }
+
+        [Option(SkipEmptyLinesArg, HelpText = "Exclude empty lines during loading the file.")]
+        public bool SkipEmptyLines { get; set; }
+        
+        [Option(ParsedColumnLimitArg, HelpText = "Limiting the number of column parsed.")]
+        public int ParsedColumnLimit { get; set; }
+
 
     }
 

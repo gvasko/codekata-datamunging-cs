@@ -39,6 +39,8 @@ namespace DataMungingConsole.Application
         {
             string fileName = string.Empty;
             IStringRecordProcessor recordProcessor = null;
+            bool skipEmptyLines = false;
+            int parsedColumnLimit = 0;
 
             if (invokedVerb == Options.LookupMinDiffOp)
             {
@@ -46,8 +48,10 @@ namespace DataMungingConsole.Application
                 fileName = lookupOptions.InputFile;
                 recordProcessor = new LookupMinDiff(
                     lookupOptions.LookupColumnAsInt,
-                    lookupOptions.Column1AsInt,
-                    lookupOptions.Column2AsInt);
+                    lookupOptions.Column1,
+                    lookupOptions.Column2);
+                skipEmptyLines = lookupOptions.SkipEmptyLines;
+                parsedColumnLimit = lookupOptions.ParsedColumnLimit;
             }
             else
             {
@@ -64,12 +68,21 @@ namespace DataMungingConsole.Application
                 throw new InvalidOperationException("Internal error: no input file provided");
             }
 
-            ILineParser lineParser = new SeparatedValuesParser(" ");
+            SeparatedValuesParser svParser = new SeparatedValuesParser(" ");
+            if (parsedColumnLimit > 0)
+            {
+                svParser.FieldLimit = parsedColumnLimit;
+            }
+            ILineParser lineParser = svParser;
 
             var wfFactory = new DefaultWorkflowFactory(new DefaultDataMungingFactory(), lineParser);
             DefaultWorkflow wf = new DefaultWorkflow(wfFactory);
-            string output = wf.EntryPoint(fileName)
-                .ExcludeLines(LineFilters.EmptyLines) // TODO: add if parameter passed
+            var loader = wf.EntryPoint(fileName);
+            if (skipEmptyLines)
+            {
+                loader.ExcludeLines(LineFilters.EmptyLines);
+            }
+            string output = loader
                 .LoadFile()
                 .SetProcessor(recordProcessor)
                 .Ready()
@@ -91,7 +104,7 @@ namespace DataMungingConsole.Application
             catch (Exception e)
             {
                 System.Console.WriteLine(e.Message);
-                Environment.Exit(CommandLine.Parser.DefaultExitCodeFail);
+                //Environment.Exit(CommandLine.Parser.DefaultExitCodeFail);
             }
         }
     }
