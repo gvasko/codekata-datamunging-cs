@@ -41,6 +41,7 @@ namespace DataMungingConsole.Application
             IStringRecordProcessor recordProcessor = null;
             bool skipEmptyLines = false;
             int parsedColumnLimit = 0;
+            bool useFirstRowAsHeader = false;
 
             if (invokedVerb == Options.LookupMinDiffOp)
             {
@@ -52,6 +53,7 @@ namespace DataMungingConsole.Application
                     lookupOptions.Column2);
                 skipEmptyLines = lookupOptions.SkipEmptyLines;
                 parsedColumnLimit = lookupOptions.ParsedColumnLimit;
+                useFirstRowAsHeader = lookupOptions.UseFirstRowAsHeader;
             }
             else
             {
@@ -78,12 +80,16 @@ namespace DataMungingConsole.Application
             var wfFactory = new DefaultWorkflowFactory(new DefaultDataMungingFactory(), lineParser);
             DefaultWorkflow wf = new DefaultWorkflow(wfFactory);
             var loader = wf.EntryPoint(fileName);
-            if (skipEmptyLines)
+            if (skipEmptyLines)     // TODO: setSkip(bool)
             {
                 loader.ExcludeLines(LineFilters.EmptyLines);
             }
-            string output = loader
-                .LoadFile()
+            var holder = loader.LoadFile();
+            if (useFirstRowAsHeader)    // TODO: setFirstR(bool)
+            {
+                holder.UseFirstRowAsHeader();
+            }
+            string output = holder
                 .SetProcessor(recordProcessor)
                 .Ready()
                 .Execute()

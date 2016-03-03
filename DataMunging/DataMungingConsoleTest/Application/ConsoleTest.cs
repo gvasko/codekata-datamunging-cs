@@ -14,7 +14,7 @@ namespace DataMungingConsoleTest
         [TestMethod]
         public void Given_WeatherDatFile_Calculate_DayWithSmallestTemperatureSpread_TestStdOut()
         {
-            string result = LaunchCLIWith(@"LookupMinDiff --data=Data\weather.dat --parsedColumnLimit=3 --resultCol=0 --col1=1 --col2=2 --skipEmptyLines");
+            string result = LaunchCLIWith(@"LookupMinDiff --data=Data\weather.dat --firstRowAsHeader --parsedColumnLimit=3 --resultCol=0 --col1=1 --col2=2 --skipEmptyLines");
 
             string expectedDayInWeatherDatFile = "14";
 

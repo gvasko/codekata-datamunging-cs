@@ -47,15 +47,15 @@ namespace DataMungingConsole.Workflow
             reader.Dispose();
         }
 
-        #endregion
-
-        #region TableHolder
-
         public ITableHolder LoadFile()
         {
             table = parser.Parse();
             return this;
         }
+
+        #endregion
+
+        #region TableHolder
 
         public IOperationExecutor Ready()
         {
@@ -65,6 +65,12 @@ namespace DataMungingConsole.Workflow
         public ITableHolder SetProcessor(IStringRecordProcessor recProc)
         {
             this.recProc = recProc;
+            return this;
+        }
+
+        public ITableHolder UseFirstRowAsHeader()
+        {
+            table.UseFirstRowAsHeader();
             return this;
         }
 

@@ -17,6 +17,7 @@ namespace DataMungingConsole.Application
         public const string Column2Arg = "col2";
         public const string SkipEmptyLinesArg = "skipEmptyLines";
         public const string ParsedColumnLimitArg = "parsedColumnLimit";
+        public const string UseFirstRowAsHeaderArg = "firstRowAsHeader";
 
         [Option(InputFileArg, HelpText = "Input file that contains the data.")]
         public string InputFile { get; set; }
@@ -36,6 +37,9 @@ namespace DataMungingConsole.Application
         
         [Option(ParsedColumnLimitArg, HelpText = "Limiting the number of column parsed.")]
         public int ParsedColumnLimit { get; set; }
+
+        [Option(UseFirstRowAsHeaderArg, HelpText = "First non empty row will be used as header.")] // TODO: test with empty first line
+        public bool UseFirstRowAsHeader { get; set; }
 
 
     }

@@ -16,6 +16,7 @@ namespace DataMungingConsole.Workflow
     internal interface ITableHolder
     {
         ITableHolder SetProcessor(IStringRecordProcessor recProc);
+        ITableHolder UseFirstRowAsHeader();
         IOperationExecutor Ready();
     }
 

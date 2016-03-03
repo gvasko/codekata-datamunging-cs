@@ -8,6 +8,7 @@ namespace IDataMunging
 {
     public interface IStringTable
     {
+        void UseFirstRowAsHeader();
         void VisitAllRecords(IStringRecordVisitor visitor);
     }
 }
