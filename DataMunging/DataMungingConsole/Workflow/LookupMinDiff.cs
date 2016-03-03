@@ -16,6 +16,8 @@ namespace DataMungingConsole.Workflow
         private string result;
         private int minDiff;
 
+        private List<ParserFixerDelegate> fixers;
+
         public LookupMinDiff(int resultIndex, int columnIndex1, int columnIndex2)
         {
             this.resultIndex = resultIndex;
@@ -23,6 +25,7 @@ namespace DataMungingConsole.Workflow
             this.columnIndex2 = columnIndex2;
             this.result = string.Empty;
             this.minDiff = Int32.MaxValue;
+            this.fixers = new List<ParserFixerDelegate>();
         }
 
         public string Result
@@ -50,13 +53,29 @@ namespace DataMungingConsole.Workflow
         private int ParseField(IStringRecord rec, int fieldIndex)
         {
             int param = 0;
-            string paramStr = rec.GetField(fieldIndex);
-            if (!Int32.TryParse(paramStr, out param))
+            string value = rec.GetField(fieldIndex);
+            bool parsed = Int32.TryParse(value, out param);
+
+            foreach (ParserFixerDelegate fixer in fixers)
             {
-                throw new ArgumentException("Unable to parse data", paramStr);
+                parsed = Int32.TryParse(fixer(fieldIndex, value), out param);
+                if (parsed)
+                {
+                    break;
+                }
+            }
+
+            if (!parsed)
+            {
+                throw new ArgumentException("Unable to parse data", value);
             }
 
             return param;
+        }
+
+        public void AddFixer(ParserFixerDelegate fixer)
+        {
+            fixers.Add(fixer);
         }
     }
 }

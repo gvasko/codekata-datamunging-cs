@@ -13,15 +13,15 @@ namespace DataMungingConsoleTest.Workflow
     [TestClass]
     public class LookupMinDiffTest
     {
+        private const int resultColumn = 0;
+        private const int column1 = 1;
+        private const int column2 = 2;
+
         [TestMethod]
         public void MinimumIsCommutative()
         {
             IStringRecord rec1 = RecordStubA13();
             IStringRecord rec2 = RecordStubB21();
-
-            int resultColumn = 0;
-            int column1 = 1;
-            int column2 = 2;
 
             LookupMinDiff lmd1 = new LookupMinDiff(resultColumn, column1, column2);
             lmd1.Visit(rec1);
@@ -42,10 +42,6 @@ namespace DataMungingConsoleTest.Workflow
             IStringRecord rec1 = RecordStubA23();
             IStringRecord rec2 = RecordStubB21();
 
-            int resultColumn = 0;
-            int column1 = 1;
-            int column2 = 2;
-
             LookupMinDiff lmd = new LookupMinDiff(resultColumn, column1, column2);
             lmd.Visit(rec1);
             lmd.Visit(rec2);
@@ -56,10 +52,6 @@ namespace DataMungingConsoleTest.Workflow
         [TestMethod]
         public void ZeroVisitResultsEmptyString()
         {
-            int resultColumn = 0;
-            int column1 = 1;
-            int column2 = 2;
-
             LookupMinDiff lmd = new LookupMinDiff(resultColumn, column1, column2);
 
             Assert.AreEqual(string.Empty, lmd.Result);
@@ -68,14 +60,24 @@ namespace DataMungingConsoleTest.Workflow
         [TestMethod, ExpectedException(typeof(ArgumentException))]
         public void NotANumberThrowsException()
         {
-            IStringRecord rec1 = RecordStubA12X();
-
-            int resultColumn = 0;
-            int column1 = 1;
-            int column2 = 2;
+            IStringRecord rec = RecordStubA12X();
 
             LookupMinDiff lmd = new LookupMinDiff(resultColumn, column1, column2);
-            lmd.Visit(rec1);
+            lmd.Visit(rec);
+        }
+
+        [TestMethod]
+        public void MinorParsingProblemsCanBeFixed()
+        {
+            IStringRecord rec = RecordStubA12X();
+            LookupMinDiff lmd = new LookupMinDiff(resultColumn, column1, column2);
+            lmd.AddFixer( (column, original) =>
+            {
+                return original.Replace("x", "");
+            });
+            lmd.Visit(rec);
+
+            Assert.AreEqual("a", lmd.Result);
         }
 
         private static IStringRecord RecordStubA12X()
