@@ -15,6 +15,12 @@ namespace DataMungingLib
         private IDataMungingFactory factory;
         private List<LineFilterDelegate> lineFilters;
 
+        public bool UseFirstRowAsHeader
+        {
+            get;
+            set;
+        }
+
         public DefaultStringTableParser(IDataMungingFactory factory, TextReader reader, ILineParser lineParser)
         {
             if (factory == null)
@@ -39,16 +45,32 @@ namespace DataMungingLib
         public IStringTable Parse()
         {
             List<string[]> recordList = new List<string[]>();
+            string[] header = null;
             while (reader.Peek() >= 0)
             {
                 string line = reader.ReadLine();
                 if (!IsExcluded(line))
                 {
                     var rec = lineParser.Parse(line);
-                    recordList.Add(rec);
+                    if (UseFirstRowAsHeader && header == null)
+                    {
+                        header = rec;
+                    }
+                    else
+                    {
+                       recordList.Add(rec);
+                    }
                 }
             }
-            return factory.CreateStringTable(recordList);
+
+            if (header == null)
+            {
+                return factory.CreateStringTable(recordList);
+            }
+            else
+            {
+                return factory.CreateStringTable(header, recordList);
+            }
         }
 
         private bool IsExcluded(string line)

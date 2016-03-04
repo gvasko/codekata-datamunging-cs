@@ -16,12 +16,12 @@ namespace DataMungingConsole.Workflow
     internal interface IConfigurationPhase
     {
         IConfigurationPhase SetProcessor(IStringRecordProcessor recProc);
-        IConfigurationPhase UseFirstRowAsHeader();
         IProcessingPhase Ready();
     }
 
     internal interface IParsingPhase : IDisposable
     {
+        IParsingPhase UseFirstRowAsHeader(bool toggle);
         IParsingPhase ExcludeLines(LineFilterDelegate filter);
         IConfigurationPhase LoadAndParseFile();
     }

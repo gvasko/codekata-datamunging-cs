@@ -4,6 +4,7 @@ using System.IO;
 using IDataMunging;
 using NSubstitute;
 using DataMungingLib;
+using System.Collections.Generic;
 
 namespace DataMungingLibTest
 {
@@ -13,46 +14,50 @@ namespace DataMungingLibTest
 
         // Test if the parser is done and deny any further use
 
+        private string line1;
+        private string line2;
+        private string line3;
+        private string testDataTable;
+        private StringReader dataTableReader;
+        private ILineParser spyLineParser;
+        private IDataMungingFactory spyFactory;
+
+        [TestInitialize]
+        public void SetUp()
+        {
+            line1 = "line1";
+            line2 = "";
+            line3 = "line3";
+            testDataTable =
+                line1 + Environment.NewLine +
+                line2 + Environment.NewLine +
+                line3 + Environment.NewLine;
+            dataTableReader = new StringReader(testDataTable);
+            spyLineParser = Substitute.For<ILineParser>();
+            spyFactory = Substitute.For<IDataMungingFactory>();
+        }
+
         [TestMethod]
         public void TableParserProcessesEachLine()
         {
-            string line1 = "line1";
-            string line2 = "";
-            string line3 = "line3";
-            string testDataTable = 
-                line1 + Environment.NewLine + 
-                line2 + Environment.NewLine + 
-                line3 + Environment.NewLine;
-            var dataTableReader = new StringReader(testDataTable);
-            var spyLineParser = Substitute.For<ILineParser>();
-            var dummyFactory = Substitute.For<IDataMungingFactory>();
-            IStringTableParser tableParser = new DefaultStringTableParser(dummyFactory, dataTableReader, spyLineParser);
+            IStringTableParser tableParser = new DefaultStringTableParser(spyFactory, dataTableReader, spyLineParser);
 
             tableParser.Parse();
 
             Received.InOrder(() =>
             {
-                spyLineParser.Parse(line1);
-                spyLineParser.Parse(line2);
-                spyLineParser.Parse(line3);
+                spyLineParser.Parse(Arg.Is<string>(line1));
+                spyLineParser.Parse(Arg.Is<string>(line2));
+                spyLineParser.Parse(Arg.Is<string>(line3));
             });
 
+            spyFactory.Received().CreateStringTable(Arg.Any<List<string[]>>());
         }
 
         [TestMethod]
         public void LinesCanBeExcludedFromParsing()
         {
-            string line1 = "line1";
-            string line2 = "";
-            string line3 = "line3";
-            string testDataTable =
-                line1 + Environment.NewLine +
-                line2 + Environment.NewLine +
-                line3 + Environment.NewLine;
-            var dataTableReader = new StringReader(testDataTable);
-            var spyLineParser = Substitute.For<ILineParser>();
-            var dummyFactory = Substitute.For<IDataMungingFactory>();
-            IStringTableParser tableParser = new DefaultStringTableParser(dummyFactory, dataTableReader, spyLineParser);
+            IStringTableParser tableParser = new DefaultStringTableParser(spyFactory, dataTableReader, spyLineParser);
 
             LineFilterDelegate emptyLines = line => string.IsNullOrEmpty(line.Trim());
             tableParser.Exclude(emptyLines);
@@ -60,9 +65,29 @@ namespace DataMungingLibTest
 
             Received.InOrder(() =>
             {
-                spyLineParser.Parse(line1);
-                spyLineParser.Parse(line3);
+                spyLineParser.Parse(Arg.Is<string>(line1));
+                spyLineParser.Parse(Arg.Is<string>(line3));
             });
+            spyLineParser.DidNotReceive().Parse(Arg.Is<string>(line2));
+
+            spyFactory.Received().CreateStringTable(Arg.Any<List<string[]>>());
+        }
+
+        [TestMethod]
+        public void FirstRowCanBeHeader()
+        {
+            IStringTableParser tableParser = new DefaultStringTableParser(spyFactory, dataTableReader, spyLineParser);
+            tableParser.UseFirstRowAsHeader = true;
+
+            LineFilterDelegate emptyLines = line => string.IsNullOrEmpty(line.Trim());
+            tableParser.Exclude(emptyLines);
+            var table = tableParser.Parse();
+
+            spyLineParser.Received().Parse(Arg.Is<string>(line1));
+            spyLineParser.DidNotReceive().Parse(Arg.Is<string>(line2));
+            spyLineParser.Received().Parse(line3);
+
+            spyFactory.Received().CreateStringTable(Arg.Any<string[]>(), Arg.Any<List<string[]>>());
         }
 
     }

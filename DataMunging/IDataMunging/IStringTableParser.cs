@@ -11,6 +11,7 @@ namespace IDataMunging
 
     public interface IStringTableParser
     {
+        bool UseFirstRowAsHeader { get; set; }
         IStringTableParser Exclude(LineFilterDelegate filter);
         IStringTable Parse();
     }

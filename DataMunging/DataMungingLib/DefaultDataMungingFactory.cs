@@ -20,6 +20,11 @@ namespace DataMungingLib
             return new DefaultStringTable(this, recordList);
         }
 
+        public IStringTable CreateStringTable(string[] header, List<string[]> recordList)
+        {
+            return new DefaultStringTable(this, header, recordList);
+        }
+
         public IStringTableParser CreateStringTableParser(TextReader reader, ILineParser lineParser)
         {
             return new DefaultStringTableParser(this, reader, lineParser);

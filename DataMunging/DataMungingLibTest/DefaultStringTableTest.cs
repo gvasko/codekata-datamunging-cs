@@ -74,26 +74,6 @@ namespace DataMungingLibTest
             AssertThatRecordsWithDifferentLenghtsThrowsException(dummyList);
         }
 
-        [TestMethod]
-        public void WhenFirstRowIsHeader_ThenItIsNotVisited()
-        {
-            List<string[]> dummyList = new List<string[]>();
-            dummyList.Add(new string[] { "A", "B" });
-            dummyList.Add(new string[] { "a", "1" });
-            dummyList.Add(new string[] { "b", "2" });
-
-            IDataMungingFactory fakeFactory = CreateRecordCreatorFakeFactory();
-            var tableSUT = new DefaultStringTable(fakeFactory, dummyList);
-            tableSUT.UseFirstRowAsHeader();
-            // Can be invoked multiple times
-            tableSUT.UseFirstRowAsHeader();
-
-            var recordVisitorSpy = new TestImpl.RecVisitorSpy();
-            tableSUT.VisitAllRecords(recordVisitorSpy);
-
-            Assert.AreEqual("a1b2", recordVisitorSpy.JoinedValues);
-        }
-
         private static void AssertThatRecordsWithDifferentLenghtsThrowsException(List<string[]> dummyList)
         {
             var dummyRecord = Substitute.For<IStringRecord>();

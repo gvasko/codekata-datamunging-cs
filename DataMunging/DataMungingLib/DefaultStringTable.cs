@@ -9,13 +9,13 @@ namespace DataMungingLib
 {
     internal class DefaultStringTable : IStringTable
     {
-        private IStringRecord header;
+        private string[] header;
         private List<IStringRecord> records;
         private int fieldCount;
 
-        public DefaultStringTable(IDataMungingFactory factory, List<string[]> recordList)
+        public DefaultStringTable(IDataMungingFactory factory, string[] header, List<string[]> recordList)
         {
-            this.header = null;
+            this.header = header;
             this.fieldCount = -1;
             this.records = new List<IStringRecord>(recordList.Count);
             for (int i = 0; i < recordList.Count; i++)
@@ -41,6 +41,11 @@ namespace DataMungingLib
             }
         }
 
+        public DefaultStringTable(IDataMungingFactory factory, List<string[]> recordList)
+            :this(factory, null, recordList)
+        {
+        }
+
         public void VisitAllRecords(IStringRecordVisitor visitor)
         {
             foreach (IStringRecord rec in records)
@@ -49,15 +54,5 @@ namespace DataMungingLib
             }
         }
 
-        public void UseFirstRowAsHeader()
-        {
-            if (header != null || records.Count == 0)
-            {
-                return;
-            }
-
-            header = records[0];
-            records.RemoveAt(0);
-        }
     }
 }

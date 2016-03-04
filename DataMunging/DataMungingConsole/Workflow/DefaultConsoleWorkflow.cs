@@ -12,12 +12,12 @@ namespace DataMungingConsole.Workflow
     {
         private IWorkflowFactory factory;
 
-        #region FileLoadingPhase
+        #region ParsingPhase
         private StreamReader reader;
         private IStringTableParser parser;
         #endregion
 
-        #region TableParsingPhase
+        #region ConfigurationPhase
         private IStringTable table;
         private IStringRecordProcessor recProc;
         #endregion
@@ -27,7 +27,7 @@ namespace DataMungingConsole.Workflow
             this.factory = factory;
         }
 
-        #region FileLoadingPhase
+        #region ParsingPhase
 
         public IParsingPhase EntryPoint(string path)
         {
@@ -47,6 +47,12 @@ namespace DataMungingConsole.Workflow
             reader.Dispose();
         }
 
+        public IParsingPhase UseFirstRowAsHeader(bool toggle)
+        {
+            parser.UseFirstRowAsHeader = toggle;
+            return this;
+        }
+
         public IConfigurationPhase LoadAndParseFile()
         {
             table = parser.Parse();
@@ -55,7 +61,7 @@ namespace DataMungingConsole.Workflow
 
         #endregion
 
-        #region TableParsingPhase
+        #region ConfigurationPhase
 
         public IProcessingPhase Ready()
         {
@@ -65,12 +71,6 @@ namespace DataMungingConsole.Workflow
         public IConfigurationPhase SetProcessor(IStringRecordProcessor recProc)
         {
             this.recProc = recProc;
-            return this;
-        }
-
-        public IConfigurationPhase UseFirstRowAsHeader()
-        {
-            table.UseFirstRowAsHeader();
             return this;
         }
 

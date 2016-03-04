@@ -84,21 +84,16 @@ namespace DataMungingConsole.Application
 
             var wfFactory = new DefaultWorkflowFactory(new DefaultDataMungingFactory(), lineParser);
             DefaultConsoleWorkflow wf = new DefaultConsoleWorkflow(wfFactory);
-            var loadingPhase = wf.EntryPoint(fileName);
+            var parsingPhase = wf.EntryPoint(fileName);
             if (skipEmptyLines)     // TODO: setSkip(bool)
             {
-                loadingPhase.ExcludeLines(LineFilters.EmptyLines);
+                parsingPhase.ExcludeLines(LineFilters.EmptyLines);
             }
-            var parsingPhase = loadingPhase.LoadAndParseFile();
-            if (useFirstRowAsHeader)    // TODO: setFirstR(bool)
-            {
-                parsingPhase.UseFirstRowAsHeader();
-            }
-            string output = parsingPhase
-                .SetProcessor(recordProcessor)
-                .Ready()
-                .Execute()
-                .Output;
+            parsingPhase.UseFirstRowAsHeader(useFirstRowAsHeader);
+            var configPhase = parsingPhase.LoadAndParseFile();
+            configPhase.SetProcessor(recordProcessor);
+            var processingPhase = configPhase.Ready();
+            string output = processingPhase.Execute().Output;
 
             return output;
         }

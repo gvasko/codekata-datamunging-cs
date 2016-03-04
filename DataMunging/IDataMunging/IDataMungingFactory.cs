@@ -11,6 +11,7 @@ namespace IDataMunging
     {
         IStringRecord CreateStringRecord(string[] values);
         IStringTable CreateStringTable(List<string[]> recordList);
+        IStringTable CreateStringTable(string[] header, List<string[]> recordList);
         IStringTableParser CreateStringTableParser(TextReader reader, ILineParser lineParser);
     }
 }
