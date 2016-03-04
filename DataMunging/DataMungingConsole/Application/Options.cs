@@ -18,6 +18,7 @@ namespace DataMungingConsole.Application
         public const string SkipEmptyLinesArg = "skipEmptyLines";
         public const string ParsedColumnLimitArg = "parsedColumnLimit";
         public const string UseFirstRowAsHeaderArg = "firstRowAsHeader";
+        public const string UseIntegerFixerArg = "intFixer";
 
         [Option(InputFileArg, HelpText = "Input file that contains the data.")]
         public string InputFile { get; set; }
@@ -40,6 +41,9 @@ namespace DataMungingConsole.Application
 
         [Option(UseFirstRowAsHeaderArg, HelpText = "First non empty row will be used as header.")] // TODO: test with empty first line
         public bool UseFirstRowAsHeader { get; set; }
+
+        [Option(UseIntegerFixerArg, HelpText = "Fix data in cells if cannot be parsed as integers.")] // TODO: test with empty first line
+        public bool UseIntegerFixer { get; set; }
 
 
     }

@@ -51,6 +51,11 @@ namespace DataMungingConsole.Application
                     lookupOptions.LookupColumnAsInt,
                     lookupOptions.Column1,
                     lookupOptions.Column2);
+
+                if (lookupOptions.UseIntegerFixer)
+                {
+                    recordProcessor.AddFixer(Fixers.KeepDigitsOnly);
+                }
                 skipEmptyLines = lookupOptions.SkipEmptyLines;
                 parsedColumnLimit = lookupOptions.ParsedColumnLimit;
                 useFirstRowAsHeader = lookupOptions.UseFirstRowAsHeader;
