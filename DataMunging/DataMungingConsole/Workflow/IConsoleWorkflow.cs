@@ -7,23 +7,23 @@ using System.Threading.Tasks;
 
 namespace DataMungingConsole.Workflow
 {
-    internal interface IOperationExecutor
+    internal interface IProcessingPhase
     {
-        IOperationExecutor Execute();
+        IProcessingPhase Execute();
         string Output { get; }
     }
 
-    internal interface ITableHolder
+    internal interface IConfigurationPhase
     {
-        ITableHolder SetProcessor(IStringRecordProcessor recProc);
-        ITableHolder UseFirstRowAsHeader();
-        IOperationExecutor Ready();
+        IConfigurationPhase SetProcessor(IStringRecordProcessor recProc);
+        IConfigurationPhase UseFirstRowAsHeader();
+        IProcessingPhase Ready();
     }
 
-    internal interface ITableLoader : IDisposable
+    internal interface IParsingPhase : IDisposable
     {
-        ITableLoader ExcludeLines(LineFilterDelegate filter);
-        ITableHolder LoadFile();
+        IParsingPhase ExcludeLines(LineFilterDelegate filter);
+        IConfigurationPhase LoadAndParseFile();
     }
 
 }

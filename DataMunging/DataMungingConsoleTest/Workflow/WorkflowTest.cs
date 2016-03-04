@@ -30,9 +30,9 @@ namespace DataMungingConsoleTest
             string dummyProcResult = "example result of record processor";
             recProcStub.Result.Returns(dummyProcResult);
 
-            DefaultWorkflow wf = new DefaultWorkflow(factoryStub);
+            DefaultConsoleWorkflow wf = new DefaultConsoleWorkflow(factoryStub);
             string output = wf.EntryPoint(dummyFileName)
-                .LoadFile()
+                .LoadAndParseFile()
                 .SetProcessor(recProcStub)
                 .Ready()
                 .Execute()

@@ -48,7 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application\Application.cs" />
-    <Compile Include="Workflow\DefaultWorkflow.cs" />
+    <Compile Include="Workflow\DefaultConsoleWorkflow.cs" />
     <Compile Include="Workflow\DefaultWorkflowFactory.cs" />
     <Compile Include="Workflow\Fixers.cs" />
     <Compile Include="Workflow\IWorkflowFactory.cs" />

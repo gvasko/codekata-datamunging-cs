@@ -8,35 +8,35 @@ using System.Threading.Tasks;
 
 namespace DataMungingConsole.Workflow
 {
-    internal class DefaultWorkflow : ITableLoader, ITableHolder, IOperationExecutor
+    internal class DefaultConsoleWorkflow : IParsingPhase, IConfigurationPhase, IProcessingPhase
     {
         private IWorkflowFactory factory;
 
-        #region TableLoader
+        #region FileLoadingPhase
         private StreamReader reader;
         private IStringTableParser parser;
         #endregion
 
-        #region TableHolder
+        #region TableParsingPhase
         private IStringTable table;
         private IStringRecordProcessor recProc;
         #endregion
 
-        public DefaultWorkflow(IWorkflowFactory factory)
+        public DefaultConsoleWorkflow(IWorkflowFactory factory)
         {
             this.factory = factory;
         }
 
-        #region TableLoader
+        #region FileLoadingPhase
 
-        public ITableLoader EntryPoint(string path)
+        public IParsingPhase EntryPoint(string path)
         {
             reader = factory.CreateStreamReader(path);
             parser = factory.CreaterStringTableParser(reader);
             return this;
         }
 
-        public ITableLoader ExcludeLines(LineFilterDelegate filter)
+        public IParsingPhase ExcludeLines(LineFilterDelegate filter)
         {
             parser.Exclude(filter);
             return this;
@@ -47,7 +47,7 @@ namespace DataMungingConsole.Workflow
             reader.Dispose();
         }
 
-        public ITableHolder LoadFile()
+        public IConfigurationPhase LoadAndParseFile()
         {
             table = parser.Parse();
             return this;
@@ -55,20 +55,20 @@ namespace DataMungingConsole.Workflow
 
         #endregion
 
-        #region TableHolder
+        #region TableParsingPhase
 
-        public IOperationExecutor Ready()
+        public IProcessingPhase Ready()
         {
             return this;
         }
 
-        public ITableHolder SetProcessor(IStringRecordProcessor recProc)
+        public IConfigurationPhase SetProcessor(IStringRecordProcessor recProc)
         {
             this.recProc = recProc;
             return this;
         }
 
-        public ITableHolder UseFirstRowAsHeader()
+        public IConfigurationPhase UseFirstRowAsHeader()
         {
             table.UseFirstRowAsHeader();
             return this;
@@ -76,7 +76,7 @@ namespace DataMungingConsole.Workflow
 
         #endregion
 
-        #region OperationExecutor
+        #region ProcessingPhase
 
         public string Output
         {
@@ -86,7 +86,7 @@ namespace DataMungingConsole.Workflow
             }
         }
 
-        public IOperationExecutor Execute()
+        public IProcessingPhase Execute()
         {
             table.VisitAllRecords(recProc);
             return this;
