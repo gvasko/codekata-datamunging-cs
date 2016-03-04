@@ -35,6 +35,11 @@ namespace DataMungingLib
 
         public override bool Equals(object obj)
         {
+			if (this == obj)
+			{
+				return true;
+			}
+			
             if (obj == null || !(obj is DefaultStringRecord))
             {
                 return false;
