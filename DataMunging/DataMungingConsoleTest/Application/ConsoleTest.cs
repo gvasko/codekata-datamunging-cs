@@ -21,6 +21,16 @@ namespace DataMungingConsoleTest
             Assert.AreEqual(expectedDayInWeatherDatFile + Environment.NewLine, result);
         }
 
+        [TestMethod]
+        public void Given_FootballDatFile_Calculate_TeamOfSmallestGoalDifference_TestStdOut()
+        {
+            string result = LaunchCLIWith(@"LookupMinDiff --data=Data\football.dat --firstRowAsHeader --intFixer --resultCol=0 --col1=6 --col2=8 --skipEmptyLines");
+
+            string expectedTeamWithSmallestGoalDifference = "Aston_Villa";
+
+            Assert.AreEqual(expectedTeamWithSmallestGoalDifference + Environment.NewLine, result);
+        }
+
         private static string LaunchCLIWith(string cmdLine)
         {
             string appName = typeof(Application).Assembly.Location;
