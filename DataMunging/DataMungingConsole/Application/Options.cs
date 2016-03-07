@@ -16,6 +16,7 @@ namespace DataMungingConsole.Application
         public const string Column1Arg = "col1";
         public const string Column2Arg = "col2";
         public const string SkipEmptyLinesArg = "skipEmptyLines";
+        public const string SkipSeparatorLinesArg = "skipSeparatorLines";
         public const string ParsedColumnLimitArg = "parsedColumnLimit";
         public const string UseFirstRowAsHeaderArg = "firstRowAsHeader";
         public const string UseIntegerFixerArg = "intFixer";
@@ -33,9 +34,12 @@ namespace DataMungingConsole.Application
         [Option(Column2Arg, HelpText = "The second column used in calculations.")]
         public int Column2 { get; set; }
 
-        [Option(SkipEmptyLinesArg, HelpText = "Exclude empty lines during loading the file.")]
+        [Option(SkipEmptyLinesArg, HelpText = "Exclude empty lines (containing whitespaces only) during loading the file.")]
         public bool SkipEmptyLines { get; set; }
-        
+
+        [Option(SkipSeparatorLinesArg, HelpText = "Exclude separator lines (containing whitespaces and the same non-alphanumeric character) during loading the file.")]
+        public bool SkipSeparatorLines { get; set; }
+
         [Option(ParsedColumnLimitArg, HelpText = "Limiting the number of column parsed.")]
         public int ParsedColumnLimit { get; set; }
 
