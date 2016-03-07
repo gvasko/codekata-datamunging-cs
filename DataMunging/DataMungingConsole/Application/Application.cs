@@ -49,7 +49,9 @@ namespace DataMungingConsole.Application
             {
                 LookupOptions lookupOptions = (LookupOptions)invokedVerbOptions;
                 fileName = lookupOptions.InputFile;
-                recordProcessor = new LookupMinDiff(
+                recordProcessor = new IntOperationLookup(
+                    (a, b) => Math.Abs(a - b),
+                    (v, curr) => v < curr,
                     lookupOptions.LookupColumnAsInt,
                     lookupOptions.Column1,
                     lookupOptions.Column2);

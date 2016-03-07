@@ -56,7 +56,7 @@
     <Compile Include="Processing\IStringRecordProcessor.cs" />
     <Compile Include="Application\Options.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Processing\LookupMinDiff.cs" />
+    <Compile Include="Processing\IntOperationLookup.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

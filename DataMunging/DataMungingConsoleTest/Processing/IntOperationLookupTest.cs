@@ -12,29 +12,20 @@ using System.Threading.Tasks;
 namespace DataMungingConsoleTest.Processing
 {
     [TestClass]
-    public class LookupMinDiffTest
+    public class IntOperationLookupTest
     {
         private const int resultColumn = 0;
         private const int column1 = 1;
         private const int column2 = 2;
 
-        [TestMethod]
-        public void MinimumIsCommutative()
+        private static IntOperationLookup createSUT()
         {
-            IStringRecord rec1 = RecordStubA13();
-            IStringRecord rec2 = RecordStubB21();
-
-            LookupMinDiff lmd1 = new LookupMinDiff(resultColumn, column1, column2);
-            lmd1.Visit(rec1);
-            lmd1.Visit(rec2);
-
-            Assert.AreEqual("b", lmd1.Result);
-
-            LookupMinDiff lmd2 = new LookupMinDiff(resultColumn, column1, column2);
-            lmd2.Visit(rec2);
-            lmd2.Visit(rec1);
-
-            Assert.AreEqual("b", lmd2.Result);
+            return new IntOperationLookup(
+                (a, b) => Math.Abs(a - b),
+                (v, curr) => v < curr,
+                resultColumn, 
+                column1, 
+                column2);
         }
 
         [TestMethod]
@@ -43,7 +34,7 @@ namespace DataMungingConsoleTest.Processing
             IStringRecord rec1 = RecordStubA23();
             IStringRecord rec2 = RecordStubB21();
 
-            LookupMinDiff lmd = new LookupMinDiff(resultColumn, column1, column2);
+            IntOperationLookup lmd = createSUT();
             lmd.Visit(rec1);
             lmd.Visit(rec2);
 
@@ -53,7 +44,7 @@ namespace DataMungingConsoleTest.Processing
         [TestMethod]
         public void ZeroVisitResultsEmptyString()
         {
-            LookupMinDiff lmd = new LookupMinDiff(resultColumn, column1, column2);
+            IntOperationLookup lmd = createSUT();
 
             Assert.AreEqual(string.Empty, lmd.Result);
         }
@@ -63,7 +54,7 @@ namespace DataMungingConsoleTest.Processing
         {
             IStringRecord rec = RecordStubA12X();
 
-            LookupMinDiff lmd = new LookupMinDiff(resultColumn, column1, column2);
+            IntOperationLookup lmd = createSUT();
             lmd.Visit(rec);
         }
 
@@ -71,7 +62,7 @@ namespace DataMungingConsoleTest.Processing
         public void MinorParsingProblemsCanBeFixed()
         {
             IStringRecord rec = RecordStubA12X();
-            LookupMinDiff lmd = new LookupMinDiff(resultColumn, column1, column2);
+            IntOperationLookup lmd = createSUT();
             lmd.AddFixer( (column, original) =>
             {
                 return original.Replace("x", "");

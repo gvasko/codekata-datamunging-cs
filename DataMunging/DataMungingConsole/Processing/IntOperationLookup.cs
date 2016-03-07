@@ -7,24 +7,34 @@ using IDataMunging;
 
 namespace DataMungingConsole.Processing
 {
-    internal class LookupMinDiff : IStringRecordProcessor
+    internal class IntOperationLookup : IStringRecordProcessor
     {
+        public delegate int IntOperation(int param1, int param2);
+        public delegate bool IsPreferred(int value, int currentPreferredValue);
+
         private int resultIndex;
         private int columnIndex1;
         private int columnIndex2;
 
         private string result;
-        private int minDiff;
+        private int currentPreferredValue;
+        private bool preferredInitialized;
 
         private List<ParserFixerDelegate> fixers;
 
-        public LookupMinDiff(int resultIndex, int columnIndex1, int columnIndex2)
+        private IntOperation intOperation;
+        private IsPreferred isPreferred;
+
+        public IntOperationLookup(IntOperation op, IsPreferred pred, int resultIndex, int columnIndex1, int columnIndex2)
         {
             this.resultIndex = resultIndex;
             this.columnIndex1 = columnIndex1;
             this.columnIndex2 = columnIndex2;
+            this.intOperation = op;
+            this.isPreferred = pred;
             this.result = string.Empty;
-            this.minDiff = Int32.MaxValue;
+            this.currentPreferredValue = 0;
+            this.preferredInitialized = false;
             this.fixers = new List<ParserFixerDelegate>();
         }
 
@@ -41,15 +51,26 @@ namespace DataMungingConsole.Processing
             int param1 = ParseField(rec, columnIndex1);
             int param2 = ParseField(rec, columnIndex2);
 
-            int actualMinDiff = Math.Abs(param1 - param2);
+            int value = intOperation(param1, param2);
 
-            if (actualMinDiff < minDiff)
+            if (!preferredInitialized || isPreferred(value, currentPreferredValue))
             {
-                minDiff = actualMinDiff;
+                preferredInitialized = true;
+                currentPreferredValue = value;
                 result = rec.GetField(resultIndex);
             }
         }
+/*
+        private static int intOperation(int param1, int param2)
+        {
+            return Math.Abs(param1 - param2);
+        }
 
+        private static bool isPreferred(int value, int currentPreferredValue)
+        {
+            return value < currentPreferredValue;
+        }
+*/
         private int ParseField(IStringRecord rec, int fieldIndex)
         {
             int param = 0;

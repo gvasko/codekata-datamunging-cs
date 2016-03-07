@@ -56,7 +56,7 @@
   <ItemGroup>
     <Compile Include="Application\ConsoleTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Processing\LookupMinDiffTest.cs" />
+    <Compile Include="Processing\IntOperationLookupTest.cs" />
     <Compile Include="Workflow\WorkflowTest.cs" />
   </ItemGroup>
   <ItemGroup>
