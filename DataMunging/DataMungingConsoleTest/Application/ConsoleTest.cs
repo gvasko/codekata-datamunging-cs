@@ -24,7 +24,7 @@ namespace DataMungingConsoleTest
         [TestMethod]
         public void Given_FootballDatFile_Calculate_TeamOfSmallestGoalDifference_TestStdOut()
         {
-            string result = LaunchCLIWith(@"LookupMinDiff --data=Data\football.dat --firstRowAsHeader --intFixer --resultCol=0 --col1=6 --col2=8 --skipEmptyLines");
+            string result = LaunchCLIWith(@"LookupMinDiff --data=Data\football.dat --firstRowAsHeader --resultCol=0 --col1=6 --col2=8 --skipEmptyLines");
 
             string expectedTeamWithSmallestGoalDifference = "Aston_Villa";
 

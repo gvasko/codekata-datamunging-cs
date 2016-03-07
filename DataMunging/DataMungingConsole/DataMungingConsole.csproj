@@ -50,13 +50,13 @@
     <Compile Include="Application\Application.cs" />
     <Compile Include="Workflow\DefaultConsoleWorkflow.cs" />
     <Compile Include="Workflow\DefaultWorkflowFactory.cs" />
-    <Compile Include="Workflow\Fixers.cs" />
+    <Compile Include="Processing\Fixers.cs" />
     <Compile Include="Workflow\IWorkflowFactory.cs" />
     <Compile Include="Workflow\IConsoleWorkflow.cs" />
-    <Compile Include="Workflow\IStringRecordProcessor.cs" />
+    <Compile Include="Processing\IStringRecordProcessor.cs" />
     <Compile Include="Application\Options.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Workflow\LookupMinDiff.cs" />
+    <Compile Include="Processing\LookupMinDiff.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataMungingConsole.Workflow
+namespace DataMungingConsole.Processing
 {
     public delegate string ParserFixerDelegate(int column, string original);
 

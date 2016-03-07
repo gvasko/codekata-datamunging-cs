@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IDataMunging;
 
-namespace DataMungingConsole.Workflow
+namespace DataMungingConsole.Processing
 {
     internal class LookupMinDiff : IStringRecordProcessor
     {

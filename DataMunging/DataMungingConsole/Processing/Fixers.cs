@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataMungingConsole.Workflow
+namespace DataMungingConsole.Processing
 {
     public sealed class Fixers
     {
