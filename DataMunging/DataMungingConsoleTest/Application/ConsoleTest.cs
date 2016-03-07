@@ -14,7 +14,7 @@ namespace DataMungingConsoleTest
         [TestMethod]
         public void Given_WeatherDatFile_Calculate_DayWithSmallestTemperatureSpread_TestStdOut()
         {
-            string result = LaunchCLIWith(@"LookupMinDiff --data=Data\weather.dat --firstRowAsHeader --intFixer --parsedColumnLimit=3 --resultCol=0 --col1=1 --col2=2 --skipEmptyLines");
+            string result = LaunchCLIWith(@"Lookup.MinDiff --data=Data\weather.dat --firstRowAsHeader --intFixer --parsedColumnLimit=3 --resultCol=0 --col1=1 --col2=2 --skipEmptyLines");
 
             string expectedDayInWeatherDatFile = "14";
 
@@ -22,9 +22,43 @@ namespace DataMungingConsoleTest
         }
 
         [TestMethod]
+        public void Given_WeatherDatFile_Calculate_DayWithSmallestTemperatureSpread_UsingHeader_TestStdOut()
+        {
+            // Challenge: refer to columns with their name in the header
+            string result = LaunchCLIWith(@"Lookup.MinDiff --data=Data\weather.dat --firstRowAsHeader --intFixer --resultCol=Dy --col1=MxT --col2=MnT --skipEmptyLines");
+
+            string expectedDayInWeatherDatFile = "14";
+
+            Assert.AreEqual(expectedDayInWeatherDatFile + Environment.NewLine, result);
+        }
+
+        [TestMethod]
+        public void Given_WeatherDatFile_Calculate_DayWithGreatestTemperatureSpread_TestStdOut()
+        {
+            // Challenge: exclude the last summary line somehow
+            string result = LaunchCLIWith(@"Lookup.MaxDiff --data=Data\weather.dat --firstRowAsHeader --intFixer --parsedColumnLimit=3 --resultCol=0 --col1=1 --col2=2 --skipEmptyLines");
+
+            string expectedDayInWeatherDatFile = "9";
+
+            Assert.AreEqual(expectedDayInWeatherDatFile + Environment.NewLine, result);
+        }
+
+        [TestMethod]
         public void Given_WeatherDatFile_Calculate_DayWithSmallestRSpread_TestStdOut()
         {
-            string result = LaunchCLIWith(@"LookupMinDiff --data=Data\weather.dat --firstRowAsHeader --intFixer --resultCol=0 --col1=14 --col2=15 --skipEmptyLines");
+            // Challenge: handle partly empty columns that cannot be avoided
+            string result = LaunchCLIWith(@"Lookup.MinDiff --data=Data\weather.dat --firstRowAsHeader --intFixer --resultCol=0 --col1=14 --col2=15 --skipEmptyLines");
+
+            string expectedDayInWeatherDatFile = "14";
+
+            Assert.AreEqual(expectedDayInWeatherDatFile + Environment.NewLine, result);
+        }
+
+        [TestMethod]
+        public void Given_WeatherDatFile_Calculate_DayWithSmallestRSpread_UsingHeader_TestStdOut()
+        {
+            // Challenge: refer to columns with their name in the header
+            string result = LaunchCLIWith(@"Lookup.MinDiff --data=Data\weather.dat --firstRowAsHeader --intFixer --resultCol=Dy --col1=MxR --col2=MnR --skipEmptyLines");
 
             string expectedDayInWeatherDatFile = "14";
 
@@ -34,7 +68,7 @@ namespace DataMungingConsoleTest
         [TestMethod]
         public void Given_FootballDatFile_Calculate_TeamOfSmallestGoalDifference_TestStdOut()
         {
-            string result = LaunchCLIWith(@"LookupMinDiff --data=Data\football.dat --firstRowAsHeader --resultCol=1 --col1=6 --col2=8 --skipSeparatorLines");
+            string result = LaunchCLIWith(@"Lookup.MinDiff --data=Data\football.dat --firstRowAsHeader --resultCol=1 --col1=6 --col2=8 --skipSeparatorLines");
 
             string expectedTeamInFootballDatFile = "Aston_Villa";
 

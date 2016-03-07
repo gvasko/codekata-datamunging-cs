@@ -38,73 +38,86 @@ namespace DataMungingConsole.Application
 
         internal string Run()
         {
-            string fileName = string.Empty;
-            IStringRecordProcessor recordProcessor = null;
-            bool skipEmptyLines = false;
-            bool skipSeparatorLines = false;
-            int parsedColumnLimit = 0;
-            bool useFirstRowAsHeader = false;
+            IStringRecordProcessor recordProcessor = ProcessCLIVerb();
 
-            if (invokedVerb == Options.LookupMinDiffOp)
-            {
-                LookupOptions lookupOptions = (LookupOptions)invokedVerbOptions;
-                fileName = lookupOptions.InputFile;
-                recordProcessor = new IntOperationLookup(
-                    (a, b) => Math.Abs(a - b),
-                    (v, curr) => v < curr,
-                    lookupOptions.LookupColumnAsInt,
-                    lookupOptions.Column1,
-                    lookupOptions.Column2);
+            LookupOptions lookupOptions = (LookupOptions)invokedVerbOptions;
 
-                if (lookupOptions.UseIntegerFixer)
-                {
-                    recordProcessor.AddFixer(Fixers.KeepDigitsOnly);
-                }
-                skipEmptyLines = lookupOptions.SkipEmptyLines;
-                skipSeparatorLines = lookupOptions.SkipSeparatorLines;
-                parsedColumnLimit = lookupOptions.ParsedColumnLimit;
-                useFirstRowAsHeader = lookupOptions.UseFirstRowAsHeader;
-            }
-            else
-            {
-                throw new InvalidOperationException("Internal error: unknown verb.");
-            }
-
-            if (recordProcessor == null)
-            {
-                throw new InvalidOperationException("Internal error: no record operation");
-            }
-
-            if (string.IsNullOrEmpty(fileName))
-            {
-                throw new InvalidOperationException("Internal error: no input file provided");
-            }
+            CheckErrors(lookupOptions, recordProcessor);
 
             SeparatedValuesParser svParser = new SeparatedValuesParser(" ");
-            if (parsedColumnLimit > 0)
+            if (lookupOptions.ParsedColumnLimit > 0)
             {
-                svParser.FieldLimit = parsedColumnLimit;
+                svParser.FieldLimit = lookupOptions.ParsedColumnLimit;
             }
             ILineParser lineParser = svParser;
 
             var wfFactory = new DefaultWorkflowFactory(new DefaultDataMungingFactory(), lineParser);
             DefaultConsoleWorkflow wf = new DefaultConsoleWorkflow(wfFactory);
-            var parsingPhase = wf.EntryPoint(fileName);
-            if (skipEmptyLines)
+            var parsingPhase = wf.EntryPoint(lookupOptions.InputFile);
+            if (lookupOptions.SkipEmptyLines)
             {
                 parsingPhase.ExcludeLines(LineFilters.EmptyLines);
             }
-            if (skipSeparatorLines)
+            if (lookupOptions.SkipSeparatorLines)
             {
                 parsingPhase.ExcludeLines(LineFilters.SeparatorLines);
             }
-            parsingPhase.UseFirstRowAsHeader(useFirstRowAsHeader);
+            parsingPhase.UseFirstRowAsHeader(lookupOptions.UseFirstRowAsHeader);
             var configPhase = parsingPhase.LoadAndParseFile();
             configPhase.SetProcessor(recordProcessor);
             var processingPhase = configPhase.Ready();
             string output = processingPhase.Execute().Output;
 
             return output;
+        }
+
+        private IStringRecordProcessor ProcessCLIVerb()
+        {
+            IStringRecordProcessor recordProcessor;
+            if (invokedVerb == Options.LookupMinDiffOp)
+            {
+                LookupOptions lookupOptions = (LookupOptions)invokedVerbOptions;
+                recordProcessor = new IntOperationLookup(
+                    (a, b) => Math.Abs(a - b),
+                    (v, curr) => v < curr,
+                    lookupOptions.LookupColumnAsInt,
+                    lookupOptions.Column1,
+                    lookupOptions.Column2);
+            }
+            else if (invokedVerb == Options.LookupMaxDiffOp)
+            {
+                LookupOptions lookupOptions = (LookupOptions)invokedVerbOptions;
+                recordProcessor = new IntOperationLookup(
+                    (a, b) => Math.Abs(a - b),
+                    (v, curr) => v > curr,
+                    lookupOptions.LookupColumnAsInt,
+                    lookupOptions.Column1,
+                    lookupOptions.Column2);
+            }
+            else
+            {
+                throw new InvalidOperationException("Internal error: unknown verb.");
+            }
+
+            return recordProcessor;
+        }
+
+        private static void CheckErrors(LookupOptions lookupOptions, IStringRecordProcessor recordProcessor)
+        {
+            if (recordProcessor == null)
+            {
+                throw new InvalidOperationException("Internal error: no record operation");
+            }
+
+            if (string.IsNullOrEmpty(lookupOptions.InputFile))
+            {
+                throw new InvalidOperationException("Internal error: no input file provided");
+            }
+
+            if (lookupOptions.UseIntegerFixer)
+            {
+                recordProcessor.AddFixer(Fixers.KeepDigitsOnly);
+            }
         }
 
         public static void Main(string[] args)

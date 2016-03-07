@@ -54,9 +54,13 @@ namespace DataMungingConsole.Application
 
     internal class Options
     {
-        public const string LookupMinDiffOp = "LookupMinDiff";
+        public const string LookupMinDiffOp = "Lookup.MinDiff";
         [VerbOption(LookupMinDiffOp, HelpText = "Lookup a value from a column, based on the difference of values in other columns.")]
         public LookupOptions LookupMinDiffVerb { get; set; }
+
+        public const string LookupMaxDiffOp = "Lookup.MaxDiff";
+        [VerbOption(LookupMaxDiffOp, HelpText = "Lookup a value from a column, based on the difference of values in other columns.")]
+        public LookupOptions LookupMaxDiffVerb { get; set; }
 
         [HelpOption]
         public string GetUsage()
