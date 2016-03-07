@@ -22,13 +22,23 @@ namespace DataMungingConsoleTest
         }
 
         [TestMethod]
+        public void Given_WeatherDatFile_Calculate_DayWithSmallestRSpread_TestStdOut()
+        {
+            string result = LaunchCLIWith(@"LookupMinDiff --data=Data\weather.dat --firstRowAsHeader --intFixer --resultCol=0 --col1=14 --col2=15 --skipEmptyLines");
+
+            string expectedDayInWeatherDatFile = "14";
+
+            Assert.AreEqual(expectedDayInWeatherDatFile + Environment.NewLine, result);
+        }
+
+        [TestMethod]
         public void Given_FootballDatFile_Calculate_TeamOfSmallestGoalDifference_TestStdOut()
         {
             string result = LaunchCLIWith(@"LookupMinDiff --data=Data\football.dat --firstRowAsHeader --resultCol=1 --col1=6 --col2=8 --skipSeparatorLines");
 
-            string expectedTeamWithSmallestGoalDifference = "Aston_Villa";
+            string expectedTeamInFootballDatFile = "Aston_Villa";
 
-            Assert.AreEqual(expectedTeamWithSmallestGoalDifference + Environment.NewLine, result);
+            Assert.AreEqual(expectedTeamInFootballDatFile + Environment.NewLine, result);
         }
 
         private static string LaunchCLIWith(string cmdLine)
