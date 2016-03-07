@@ -44,24 +44,27 @@ namespace DataMungingConsole.Application
 
             CheckErrors(lookupOptions, recordProcessor);
 
-            SeparatedValuesParser svParser = new SeparatedValuesParser(" ");
-            if (lookupOptions.ParsedColumnLimit > 0)
+            if (lookupOptions.UseIntegerFixer)
             {
-                svParser.FieldLimit = lookupOptions.ParsedColumnLimit;
+                recordProcessor.AddFixer(Fixers.KeepDigitsOnly);
             }
-            ILineParser lineParser = svParser;
 
-            var wfFactory = new DefaultWorkflowFactory(new DefaultDataMungingFactory(), lineParser);
-            DefaultConsoleWorkflow wf = new DefaultConsoleWorkflow(wfFactory);
-            var parsingPhase = wf.EntryPoint(lookupOptions.InputFile);
+            ILineParser lineParser = GetDefaultLineParser(lookupOptions);
+
+            var workflowFactory = new DefaultWorkflowFactory(new DefaultDataMungingFactory(), lineParser);
+            DefaultConsoleWorkflow workflow = new DefaultConsoleWorkflow(workflowFactory);
+            var parsingPhase = workflow.EntryPoint(lookupOptions.InputFile);
+
             if (lookupOptions.SkipEmptyLines)
             {
                 parsingPhase.ExcludeLines(LineFilters.EmptyLines);
             }
+
             if (lookupOptions.SkipSeparatorLines)
             {
                 parsingPhase.ExcludeLines(LineFilters.SeparatorLines);
             }
+
             parsingPhase.UseFirstRowAsHeader(lookupOptions.UseFirstRowAsHeader);
             var configPhase = parsingPhase.LoadAndParseFile();
             configPhase.SetProcessor(recordProcessor);
@@ -69,6 +72,17 @@ namespace DataMungingConsole.Application
             string output = processingPhase.Execute().Output;
 
             return output;
+        }
+
+        private static ILineParser GetDefaultLineParser(LookupOptions lookupOptions)
+        {
+            SeparatedValuesParser svParser = new SeparatedValuesParser(" ");
+            if (lookupOptions.ParsedColumnLimit > 0)
+            {
+                svParser.FieldLimit = lookupOptions.ParsedColumnLimit;
+            }
+            ILineParser lineParser = svParser;
+            return lineParser;
         }
 
         private IStringRecordProcessor ProcessCLIVerb()
@@ -112,11 +126,6 @@ namespace DataMungingConsole.Application
             if (string.IsNullOrEmpty(lookupOptions.InputFile))
             {
                 throw new InvalidOperationException("Internal error: no input file provided");
-            }
-
-            if (lookupOptions.UseIntegerFixer)
-            {
-                recordProcessor.AddFixer(Fixers.KeepDigitsOnly);
             }
         }
 
