@@ -36,7 +36,7 @@ namespace DataMungingConsoleTest
         public void Given_WeatherDatFile_Calculate_DayWithGreatestTemperatureSpread_TestStdOut()
         {
             // Challenge: exclude the last summary line somehow
-            string result = DebugCLIWith(@"Lookup.MaxDiff --data=Data\weather.dat --firstRowAsHeader --intFixer --parsedColumnLimit=3 --skipLines=32  --resultCol=0 --col1=1 --col2=2 --skipEmptyLines");
+            string result = LaunchCLIWith(@"Lookup.MaxDiff --data=Data\weather.dat --firstRowAsHeader --intFixer --parsedColumnLimit=3 --skipLines=32  --resultCol=0 --col1=1 --col2=2 --skipEmptyLines");
 
             string expectedDayInWeatherDatFile = "9";
 
