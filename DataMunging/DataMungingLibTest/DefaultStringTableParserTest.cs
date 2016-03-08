@@ -59,7 +59,7 @@ namespace DataMungingLibTest
         {
             IStringTableParser tableParser = new DefaultStringTableParser(spyFactory, dataTableReader, spyLineParser);
 
-            LineFilterDelegate emptyLines = line => string.IsNullOrEmpty(line.Trim());
+            LineFilterDelegate emptyLines = (index, line) => string.IsNullOrWhiteSpace(line);
             tableParser.Exclude(emptyLines);
             tableParser.Parse();
 
@@ -79,7 +79,7 @@ namespace DataMungingLibTest
             IStringTableParser tableParser = new DefaultStringTableParser(spyFactory, dataTableReader, spyLineParser);
             tableParser.UseFirstRowAsHeader = true;
 
-            LineFilterDelegate emptyLines = line => string.IsNullOrEmpty(line.Trim());
+            LineFilterDelegate emptyLines = (index, line) => string.IsNullOrWhiteSpace(line);
             tableParser.Exclude(emptyLines);
             var table = tableParser.Parse();
 
@@ -89,6 +89,25 @@ namespace DataMungingLibTest
 
             spyFactory.Received().CreateStringTable(Arg.Any<string[]>(), Arg.Any<List<string[]>>());
         }
+
+        [TestMethod]
+        public void LineFiltersGetLinesWithIndices()
+        {
+            IStringTableParser tableParser = new DefaultStringTableParser(spyFactory, dataTableReader, spyLineParser);
+
+            var spyFilter = Substitute.For<LineFilterDelegate>();
+            spyFilter(Arg.Any<int>(), Arg.Any<string>()).Returns(true);
+            tableParser.Exclude(spyFilter);
+            tableParser.Parse();
+
+            Received.InOrder(() =>
+            {
+                spyFilter(Arg.Is<int>(0), Arg.Is<string>(line1));
+                spyFilter(Arg.Is<int>(1), Arg.Is<string>(line2));
+                spyFilter(Arg.Is<int>(2), Arg.Is<string>(line3));
+            });
+        }
+
 
     }
 }

@@ -65,6 +65,13 @@ namespace DataMungingConsole.Application
                 parsingPhase.ExcludeLines(LineFilters.SeparatorLines);
             }
 
+            if (lookupOptions.SkippedLines.Length > 0)
+            {
+                // TODO: What about garbage collection here?
+                LineFilters.LinesAtIndex linesAtIndex = new LineFilters.LinesAtIndex(lookupOptions.SkippedLines);
+                parsingPhase.ExcludeLines(linesAtIndex.IsSelected);
+            }
+
             parsingPhase.UseFirstRowAsHeader(lookupOptions.UseFirstRowAsHeader);
             var configPhase = parsingPhase.LoadAndParseFile();
             configPhase.SetProcessor(recordProcessor);

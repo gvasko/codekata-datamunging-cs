@@ -46,10 +46,11 @@ namespace DataMungingLib
         {
             List<string[]> recordList = new List<string[]>();
             string[] header = null;
+            int index = 0;
             while (reader.Peek() >= 0)
             {
                 string line = reader.ReadLine();
-                if (!IsExcluded(line))
+                if (!IsExcluded(index, line))
                 {
                     var rec = lineParser.Parse(line);
                     if (UseFirstRowAsHeader && header == null)
@@ -61,6 +62,7 @@ namespace DataMungingLib
                        recordList.Add(rec);
                     }
                 }
+                index++;
             }
 
             if (header == null)
@@ -73,11 +75,11 @@ namespace DataMungingLib
             }
         }
 
-        private bool IsExcluded(string line)
+        private bool IsExcluded(int index, string line)
         {
             foreach (LineFilterDelegate lineFilter in lineFilters)
             {
-                if (lineFilter(line))
+                if (lineFilter(index, line))
                 {
                     return true;
                 }

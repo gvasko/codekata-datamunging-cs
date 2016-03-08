@@ -20,6 +20,7 @@ namespace DataMungingConsole.Application
         public const string ParsedColumnLimitArg = "parsedColumnLimit";
         public const string UseFirstRowAsHeaderArg = "firstRowAsHeader";
         public const string UseIntegerFixerArg = "intFixer";
+        public const string SkipLinesArg = "skipLines";
 
         [Option(InputFileArg, HelpText = "Input file that contains the data.")]
         public string InputFile { get; set; }
@@ -49,6 +50,8 @@ namespace DataMungingConsole.Application
         [Option(UseIntegerFixerArg, HelpText = "Fix data in cells if cannot be parsed as integers.")] // TODO: test with empty first line
         public bool UseIntegerFixer { get; set; }
 
+        [OptionArray(SkipLinesArg, DefaultValue = new int[] { },  HelpText = "List of line indices to be skipped.")]
+        public int[] SkippedLines { get; set; }
 
     }
 
