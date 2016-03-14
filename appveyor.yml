@@ -1,1 +1,2 @@
-
+environment:
+	EnableNuGetPackageRestore: true
