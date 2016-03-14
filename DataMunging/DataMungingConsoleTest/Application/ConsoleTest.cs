@@ -21,7 +21,7 @@ namespace DataMungingConsoleTest
             Assert.AreEqual(expectedDayInWeatherDatFile + Environment.NewLine, result);
         }
 
-        [TestMethod]
+        [TestMethod, Ignore()]
         public void Given_WeatherDatFile_Calculate_DayWithSmallestTemperatureSpread_UsingHeader_TestStdOut()
         {
             // Challenge: refer to columns with their name in the header
@@ -43,7 +43,7 @@ namespace DataMungingConsoleTest
             Assert.AreEqual(expectedDayInWeatherDatFile + Environment.NewLine, result);
         }
 
-        [TestMethod]
+        [TestMethod, Ignore()]
         public void Given_WeatherDatFile_Calculate_DayWithSmallestRSpread_TestStdOut()
         {
             // Challenge: handle partly empty columns that cannot be avoided
@@ -54,7 +54,7 @@ namespace DataMungingConsoleTest
             Assert.AreEqual(expectedDayInWeatherDatFile + Environment.NewLine, result);
         }
 
-        [TestMethod]
+        [TestMethod, Ignore()]
         public void Given_WeatherDatFile_Calculate_DayWithSmallestRSpread_UsingHeader_TestStdOut()
         {
             // Challenge: refer to columns with their name in the header
