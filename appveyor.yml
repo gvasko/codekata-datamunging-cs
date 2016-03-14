@@ -4,3 +4,7 @@ environment:
 platform: Any CPU
 configuration: Release
 
+before_build:
+    nuget restore -verbosity detailed
+	
+	
