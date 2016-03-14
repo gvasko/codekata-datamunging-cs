@@ -1,2 +1,6 @@
 environment:
     EnableNuGetPackageRestore: true
+
+platform: Any CPU
+configuration: Release
+
