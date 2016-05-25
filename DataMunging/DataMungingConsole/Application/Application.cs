@@ -4,31 +4,47 @@ using DataMungingLib;
 using DataMungingLib.LineParsers;
 using IDataMunging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace DataMungingConsole.Application
 {
     public class Application : IDisposable
     {
-        private string invokedVerb = string.Empty;
-        private object invokedVerbOptions = null;
+        private LookupOptions invokedVerbOptions;
+        private IStringRecordProcessor recordProcessor;
 
-        public Application(string[] args)
+        public static void Main(string[] args)
+        {
+            try
+            {
+                using (Application app = new Application(args))
+                {
+                    System.Console.WriteLine(app.Run());
+                }
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.Message);
+                //Environment.Exit(CommandLine.Parser.DefaultExitCodeFail);
+            }
+        }
+
+        internal Application(string[] args)
         {
             var options = new Options();
+            string invokedVerb = string.Empty;
             if (!CommandLine.Parser.Default.ParseArguments(args, options,
                 (verb, subOptions) =>
                 {
                     invokedVerb = verb;
-                    invokedVerbOptions = subOptions;
+                    invokedVerbOptions = (LookupOptions)subOptions;
                 }))
             {
                 System.Console.WriteLine(options.GetUsage());
                 throw new ArgumentException("Invalid arguments.");
             }
+
+            InitOperation(invokedVerb);
         }
 
         public void Dispose()
@@ -38,47 +54,40 @@ namespace DataMungingConsole.Application
 
         internal string Run()
         {
-            IStringRecordProcessor recordProcessor = ProcessCLIVerb();
+            DefaultConsoleWorkflow workflow = CreateWorkflow();
 
-            LookupOptions lookupOptions = (LookupOptions)invokedVerbOptions;
+            var parsingPhase = workflow.EntryPoint(invokedVerbOptions.InputFile);
 
-            CheckErrors(lookupOptions, recordProcessor);
+            setupParsingPhase(parsingPhase);
 
-            if (lookupOptions.UseIntegerFixer)
-            {
-                recordProcessor.AddFixer(Fixers.KeepDigitsOnly);
-            }
-
-            ILineParser lineParser = GetDefaultLineParser(lookupOptions);
-
-            var workflowFactory = new DefaultWorkflowFactory(new DefaultDataMungingFactory(), lineParser);
-            DefaultConsoleWorkflow workflow = new DefaultConsoleWorkflow(workflowFactory);
-            var parsingPhase = workflow.EntryPoint(lookupOptions.InputFile);
-
-            if (lookupOptions.SkipEmptyLines)
-            {
-                parsingPhase.ExcludeLines(LineFilters.EmptyLines);
-            }
-
-            if (lookupOptions.SkipSeparatorLines)
-            {
-                parsingPhase.ExcludeLines(LineFilters.SeparatorLines);
-            }
-
-            if (lookupOptions.SkippedLines.Length > 0)
-            {
-                // TODO: What about garbage collection here?
-                LineFilters.LinesAtIndex linesAtIndex = new LineFilters.LinesAtIndex(lookupOptions.SkippedLines);
-                parsingPhase.ExcludeLines(linesAtIndex.IsSelected);
-            }
-
-            parsingPhase.UseFirstRowAsHeader(lookupOptions.UseFirstRowAsHeader);
             var configPhase = parsingPhase.LoadAndParseFile();
-            configPhase.SetProcessor(recordProcessor);
+
+            setupConfigPhase(configPhase);
+
             var processingPhase = configPhase.Ready();
+
             string output = processingPhase.Execute().Output;
 
             return output;
+        }
+
+        private void InitOperation(string invokedVerb)
+        {
+            recordProcessor = CreateOperationForVerb(invokedVerb, invokedVerbOptions);
+            CheckErrors(invokedVerbOptions, recordProcessor);
+
+            if (invokedVerbOptions.UseIntegerFixer)
+            {
+                recordProcessor.AddFixer(Fixers.KeepDigitsOnly);
+            }
+        }
+
+        private DefaultConsoleWorkflow CreateWorkflow()
+        {
+            ILineParser lineParser = GetDefaultLineParser(invokedVerbOptions);
+            IWorkflowFactory workflowFactory = new DefaultWorkflowFactory(new DefaultDataMungingFactory(), lineParser);
+            DefaultConsoleWorkflow workflow = new DefaultConsoleWorkflow(workflowFactory);
+            return workflow;
         }
 
         private static ILineParser GetDefaultLineParser(LookupOptions lookupOptions)
@@ -88,32 +97,56 @@ namespace DataMungingConsole.Application
             {
                 svParser.FieldLimit = lookupOptions.ParsedColumnLimit;
             }
-            ILineParser lineParser = svParser;
-            return lineParser;
+            return svParser;
         }
 
-        private IStringRecordProcessor ProcessCLIVerb()
+        private void setupParsingPhase(IParsingPhase parsingPhase)
+        {
+            if (invokedVerbOptions.SkipEmptyLines)
+            {
+                parsingPhase.ExcludeLines(LineFilters.EmptyLines);
+            }
+
+            if (invokedVerbOptions.SkipSeparatorLines)
+            {
+                parsingPhase.ExcludeLines(LineFilters.SeparatorLines);
+            }
+
+            if (invokedVerbOptions.SkippedLines.Length > 0)
+            {
+                // TODO: What about garbage collection here?
+                LineFilters.LinesAtIndex linesAtIndex = new LineFilters.LinesAtIndex(invokedVerbOptions.SkippedLines);
+                parsingPhase.ExcludeLines(linesAtIndex.IsSelected);
+            }
+
+            parsingPhase.UseFirstRowAsHeader(invokedVerbOptions.UseFirstRowAsHeader);
+        }
+
+        private void setupConfigPhase(IConfigurationPhase configPhase)
+        {
+            configPhase.SetProcessor(recordProcessor);
+        }
+
+        private static IStringRecordProcessor CreateOperationForVerb(string invokedVerb, LookupOptions invokedVerbOptions)
         {
             IStringRecordProcessor recordProcessor;
             if (invokedVerb == Options.LookupMinDiffOp)
             {
-                LookupOptions lookupOptions = (LookupOptions)invokedVerbOptions;
                 recordProcessor = new IntOperationLookup(
                     (a, b) => Math.Abs(a - b),
                     (v, curr) => v < curr,
-                    lookupOptions.LookupColumnAsInt,
-                    lookupOptions.Column1,
-                    lookupOptions.Column2);
+                    invokedVerbOptions.LookupColumnAsInt,
+                    invokedVerbOptions.Column1,
+                    invokedVerbOptions.Column2);
             }
             else if (invokedVerb == Options.LookupMaxDiffOp)
             {
-                LookupOptions lookupOptions = (LookupOptions)invokedVerbOptions;
                 recordProcessor = new IntOperationLookup(
                     (a, b) => Math.Abs(a - b),
                     (v, curr) => v > curr,
-                    lookupOptions.LookupColumnAsInt,
-                    lookupOptions.Column1,
-                    lookupOptions.Column2);
+                    invokedVerbOptions.LookupColumnAsInt,
+                    invokedVerbOptions.Column1,
+                    invokedVerbOptions.Column2);
             }
             else
             {
@@ -136,21 +169,6 @@ namespace DataMungingConsole.Application
             }
         }
 
-        public static void Main(string[] args)
-        {
-            try
-            {
-                using (Application app = new Application(args))
-                {
-                    System.Console.WriteLine(app.Run());
-                }
-            }
-            catch (Exception e)
-            {
-                System.Console.WriteLine(e.Message);
-                //Environment.Exit(CommandLine.Parser.DefaultExitCodeFail);
-            }
-        }
     }
 
 }

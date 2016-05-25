@@ -1,13 +1,8 @@
 ﻿using DataMungingConsole.Processing;
-using DataMungingConsole.Workflow;
 using IDataMunging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataMungingConsoleTest.Processing
 {

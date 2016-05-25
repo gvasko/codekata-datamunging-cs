@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 
-using DataMungingConsole;
 using System.Diagnostics;
 using DataMungingConsole.Application;
 
